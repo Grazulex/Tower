@@ -50,3 +50,11 @@ class EnemyWave:
 
     def get_enemies(self):
         return self.enemies
+        
+    def get_total_enemies(self):
+        """Retourne le nombre total d'ennemis dans la vague"""
+        return self.num_enemies
+        
+    def get_remaining_enemies(self):
+        """Retourne le nombre d'ennemis restants (non spawned + vivants)"""
+        return self.num_enemies - self.enemies_spawned + len(self.enemies)

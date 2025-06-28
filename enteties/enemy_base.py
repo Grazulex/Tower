@@ -87,9 +87,10 @@ class Enemy:
             self.particles.append(particle)
             print(f"Particle {i} created with color {RED}")
         
-        # Ajouter les points au score quand l'ennemi est détruit
+        # Ajouter les points au score et incrémenter le compteur d'ennemis tués
         if self.game_manager and self.visible:  # On vérifie que l'ennemi n'a pas déjà été compté
             self.game_manager.add_points(self.points_value)
+            self.game_manager.enemy_killed()
         
         self.health = 0
         self.visible = False  # Cache l'ennemi mais garde sa position pour les particules

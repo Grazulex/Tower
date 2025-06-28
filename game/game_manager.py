@@ -5,6 +5,7 @@ from enteties.tours.tour_slow import TourSlow
 class GameManager:
     def __init__(self):
         self.points = 300  # Points de départ
+        self.enemies_killed = 0
         
     def add_points(self, amount):
         """Ajoute des points au joueur"""
@@ -29,3 +30,11 @@ class GameManager:
     def get_points(self):
         """Retourne le nombre de points actuel"""
         return self.points
+        
+    def enemy_killed(self):
+        """Incrémente le compteur d'ennemis tués"""
+        self.enemies_killed += 1
+        
+    def get_enemies_killed(self):
+        """Retourne le nombre d'ennemis tués"""
+        return self.enemies_killed
