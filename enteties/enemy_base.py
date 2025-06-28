@@ -50,4 +50,9 @@ class Enemy:
         self.screen.blit(text, text_rect)
 
     def is_active(self):
-        return not self.reached_end
+        return not self.reached_end and self.health > 0
+
+    def take_damage(self, damage):
+        self.health -= damage
+        print(f"Enemy took {damage} damage! Health remaining: {self.health}")
+        return self.health <= 0  # Retourne True si l'ennemi est mort

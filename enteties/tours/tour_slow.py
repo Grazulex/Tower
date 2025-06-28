@@ -6,5 +6,5 @@ class TourSlow(Tour):
         Tour.__init__(self, screen, column, row)
         self.color = YELLOW
         self.attack_range = 80
-        self.attack_speed = 0.25
-        self.damage = 500
+        self.attack_speed = 0.5
+        self.damage = 50

@@ -42,7 +42,7 @@ def run():
                     else:
                         grid_data[row][column] = 1
         screen.fill(BLACK)
-        grid.draw()
+        grid.draw(enemy_wave.get_enemies())
         track.draw()
 
         # Mettre à jour la vague d'ennemis

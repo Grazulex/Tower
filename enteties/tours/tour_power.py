@@ -6,5 +6,5 @@ class TourPower(Tour):
         Tour.__init__(self, screen, column, row)
         self.color = RED
         self.attack_range = 25
-        self.attack_speed = 1
-        self.damage = 100
+        self.attack_speed = 1.5
+        self.damage = 10

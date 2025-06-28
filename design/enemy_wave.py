@@ -38,3 +38,6 @@ class EnemyWave:
         
     def is_wave_complete(self):
         return self.enemies_spawned >= self.num_enemies and len(self.enemies) == 0
+
+    def get_enemies(self):
+        return self.enemies
