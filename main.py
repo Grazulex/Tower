@@ -1,4 +1,5 @@
 import pygame
+import random
 from sys import exit
 from config.constants import *
 from config.color import *
@@ -21,7 +22,7 @@ def run():
     track_data = track.get_track()
 
     # Créer une vague de 5 ennemis avec 1 seconde (1000ms) entre chaque spawn
-    enemy_wave = EnemyWave(screen, track_data, num_enemies=5, spawn_delay=1000)
+    enemy_wave = EnemyWave(screen, track_data, num_enemies=random.randint(15,25), spawn_delay=random.randint(500, 2000))
 
     while True:
         for event in pygame.event.get():

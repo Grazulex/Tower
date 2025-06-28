@@ -1,6 +1,7 @@
 import pygame
 from config.color import *
 from config.constants import *
+from enteties.tour_base import Tour
 
 class Grid:
 
@@ -21,7 +22,8 @@ class Grid:
                 if self.grid[row][column] == 0:
                     pygame.draw.rect(self.screen, DARK_GRAY, (self.cell_size*column, self.cell_size*row, self.cell_size, self.cell_size),1)
                 else:
-                    pygame.draw.rect(self.screen, GREEN, (self.cell_size*column, self.cell_size*row, self.cell_size, self.cell_size))
+                    tour = Tour(self.screen, column, row)
+                    tour.draw()
 
     def get_grid(self):
         return self.grid
