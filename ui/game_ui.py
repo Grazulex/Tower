@@ -20,8 +20,40 @@ class GameUI:
     def draw_points(self, points):
         """Affiche le nombre de points du joueur"""
         points_text = self.font.render(f"Points: {points}", True, WHITE)
-        points_rect = points_text.get_rect(topleft=(BOARD_WIDTH + 10, 10))  # Position dans la zone UI
+        # Ancrer le texte à droite pour éviter le débordement
+        points_rect = points_text.get_rect(topright=(WINDOW_WIDTH - 10, 10))
         self.screen.blit(points_text, points_rect)
+        
+    def draw_lives(self, lives):
+        """Affiche le nombre de vies restantes"""
+        lives_text = self.font.render(f"Vies: {lives}", True, 
+                                    RED if lives < 5 else WHITE)  # Rouge si peu de vies
+        lives_rect = lives_text.get_rect(topright=(WINDOW_WIDTH - 10, 50))
+        self.screen.blit(lives_text, lives_rect)
+        
+    def draw_game_over(self, game_manager):
+        """Affiche l'écran de game over"""
+        # Fond semi-transparent noir
+        overlay = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
+        overlay.fill(BLACK)
+        overlay.set_alpha(128)
+        self.screen.blit(overlay, (0, 0))
+        
+        # Texte de game over
+        game_over_font = pygame.font.SysFont(None, 72)
+        game_over_text = game_over_font.render("GAME OVER", True, RED)
+        text_rect = game_over_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 - 50))
+        self.screen.blit(game_over_text, text_rect)
+        
+        # Score final
+        wave_text = self.font.render(f"Vague atteinte: {game_manager.get_current_wave()}", True, WHITE)
+        wave_rect = wave_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + 10))
+        self.screen.blit(wave_text, wave_rect)
+        
+        # Ennemis tués
+        kills_text = self.font.render(f"Ennemis tués: {game_manager.get_enemies_killed()}", True, WHITE)
+        kills_rect = kills_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + 50))
+        self.screen.blit(kills_text, kills_rect)
         
     def draw_enemy_info(self, enemy_wave, game_manager):
         """Affiche les informations sur les ennemis et la vague"""
@@ -69,6 +101,9 @@ class GameUI:
         """Affiche les boutons de sélection des tours"""
         self.tower_buttons.clear()
         
+        # Position de départ des boutons, plus bas pour éviter le chevauchement
+        y_start = 100
+        
         for i, tower_type in enumerate(TowerType.get_all_towers()):
             cost = tower_type.get_cost()
             color = tower_type.get_color()
@@ -76,7 +111,7 @@ class GameUI:
             
             # Calculer la position du bouton
             ui_x = BOARD_WIDTH + 10
-            y = 50 + i * (self.button_size + self.button_padding)
+            y = y_start + i * (self.button_size + self.button_padding)
             button_rect = pygame.Rect(ui_x, y, self.button_size, self.button_size)
             
             # Dessiner le carré de couleur

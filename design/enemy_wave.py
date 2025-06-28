@@ -38,8 +38,14 @@ class EnemyWave:
             enemy.draw()
             
             # Si l'ennemi n'est plus actif et n'a plus de particules, on le marque pour suppression
-            if not enemy.is_active() and not enemy.particles:
-                enemies_to_remove.append(enemy)
+            # Si l'ennemi n'est plus actif
+            if not enemy.is_active():
+                # Si l'ennemi a atteint la fin, faire perdre une vie
+                if enemy.reached_end:
+                    self.game_manager.lose_life()
+                # Si l'ennemi n'a plus de particules, le retirer
+                if not enemy.particles:
+                    enemies_to_remove.append(enemy)
         
         # Retirer les ennemis qui n'ont plus de particules
         for enemy in enemies_to_remove:

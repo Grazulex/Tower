@@ -66,8 +66,17 @@ def run():
 
         # Afficher l'interface utilisateur
         game_ui.draw_points(game_manager.get_points())
+        game_ui.draw_lives(game_manager.get_lives())
         game_ui.draw_tower_buttons(game_manager.get_points())
         game_ui.draw_enemy_info(enemy_wave, game_manager)
+        
+# Si game over, afficher l'écran de fin
+        if game_manager.is_game_over():
+            game_ui.draw_game_over(game_manager)
+            pygame.display.flip()
+            pygame.time.wait(3000)  # Attendre 3 secondes
+            pygame.quit()
+            exit()
         
         # Afficher l'aperçu de la tour sélectionnée
         if game_ui.get_selected_tower() is not None:

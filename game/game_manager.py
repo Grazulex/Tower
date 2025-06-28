@@ -8,6 +8,22 @@ class GameManager:
         self.enemies_killed = 0
         self.current_wave = 1
         self.wave_completed = False  # Flag pour indiquer si la vague actuelle est terminée
+        self.lives = 20  # Nombre de vies au départ
+        self.game_over = False
+        
+    def lose_life(self):
+        """Perd une vie et vérifie si le jeu est terminé"""
+        self.lives -= 1
+        if self.lives <= 0:
+            self.game_over = True
+            
+    def get_lives(self):
+        """Retourne le nombre de vies restantes"""
+        return self.lives
+        
+    def is_game_over(self):
+        """Vérifie si le jeu est terminé"""
+        return self.game_over
         
     def next_wave(self):
         """Passe à la vague suivante"""
