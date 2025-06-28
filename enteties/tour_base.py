@@ -16,6 +16,11 @@ class Tour:
         self.attack_range = TOUR_RANGE
         self.cell_size = CELL_SIZE
         self.font = pygame.font.SysFont(None, 12)
+        
+        # Pour l'animation d'attaque
+        self.is_attacking = False
+        self.attack_animation_duration = ATTACK_DURATION
+        self.current_target = None
 
     def draw(self, enemies):
         pygame.draw.rect(self.screen, self.color,
@@ -36,10 +41,7 @@ class Tour:
                 distance = ((enemy.x - center_x) ** 2 + (enemy.y - center_y) ** 2) ** 0.5
                 if distance <= self.attack_range:
                     enemies_in_range.append(enemy)
-                    # Dessiner une ligne vers l'ennemi à portée
-                    pygame.draw.line(self.screen, RED, (center_x, center_y), (enemy.x, enemy.y), 1)
-            
-            # Si on a des ennemis à portée et que le délai d'attaque est écoulé
+
             if enemies_in_range:
                 current_time = pygame.time.get_ticks()
 
@@ -49,6 +51,20 @@ class Tour:
                     target = min(enemies_in_range, key=lambda e: ((e.x - center_x)**2 + (e.y - center_y)**2))
                     self.attack(target)
                     self.last_attack_time = current_time
+
+                    self.is_attacking = True
+                    self.current_target = target
+
+                # Si on est en train d'attaquer, afficher la ligne d'attaque
+                if self.is_attacking:
+                    attack_animation_time = current_time - self.last_attack_time
+                    if attack_animation_time <= self.attack_animation_duration:
+                        # Ligne plus épaisse pour l'attaque
+                        pygame.draw.line(self.screen, RED, (center_x, center_y),
+                                       (self.current_target.x, self.current_target.y), 3)
+                    else:
+                        self.is_attacking = False
+                        self.current_target = None
 
     def attack(self, enemy):
         enemy.take_damage(self.damage)

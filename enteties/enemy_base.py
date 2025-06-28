@@ -54,5 +54,9 @@ class Enemy:
 
     def take_damage(self, damage):
         self.health -= damage
-        print(f"Enemy took {damage} damage! Health remaining: {self.health}")
-        return self.health <= 0  # Retourne True si l'ennemi est mort
+        if self.health <= 0:
+            self.remove()
+
+    def remove(self):
+        self.health = 0
+        self.x = -100

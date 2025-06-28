@@ -35,12 +35,26 @@ def run():
                 row = pos[1] // CELL_SIZE
                 print(f"Clicked on cell: ({row}, {column})")
                 if (row, column) not in track_data:
-                    if grid_data[row][column] == 1:
-                        grid_data[row][column] = 2
-                    elif grid_data[row][column] == 2:
-                        grid_data[row][column] = 3
-                    else:
-                        grid_data[row][column] = 1
+                    current_type = grid_data[row][column]
+                    print(f"Current tower type: {current_type}")
+                    
+                    if current_type == 0:
+                        grid.add_tower(row, column, 1)
+                        print("Adding normal tower")
+                    elif current_type == 1:
+                        grid.remove_tower(row, column)
+                        grid.add_tower(row, column, 2)
+                        print("Upgrading to power tower")
+                    elif current_type == 2:
+                        grid.remove_tower(row, column)
+                        grid.add_tower(row, column, 3)
+                        print("Upgrading to slow tower")
+                    elif current_type == 3:
+                        grid.remove_tower(row, column)
+                        print("Removing tower")
+                    
+                    # Mettre à jour grid_data avec le nouveau type
+                    grid_data = grid.get_grid()
         screen.fill(BLACK)
         grid.draw(enemy_wave.get_enemies())
         track.draw()
