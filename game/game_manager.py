@@ -6,6 +6,25 @@ class GameManager:
     def __init__(self):
         self.points = 300  # Points de départ
         self.enemies_killed = 0
+        self.current_wave = 1
+        self.wave_completed = False  # Flag pour indiquer si la vague actuelle est terminée
+        
+    def next_wave(self):
+        """Passe à la vague suivante"""
+        self.current_wave += 1
+        self.wave_completed = False
+        
+    def get_current_wave(self):
+        """Retourne le numéro de la vague actuelle"""
+        return self.current_wave
+        
+    def set_wave_completed(self, completed):
+        """Définit si la vague actuelle est terminée"""
+        self.wave_completed = completed
+        
+    def is_wave_completed(self):
+        """Vérifie si la vague actuelle est terminée"""
+        return self.wave_completed
         
     def add_points(self, amount):
         """Ajoute des points au joueur"""

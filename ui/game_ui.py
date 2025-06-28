@@ -24,11 +24,16 @@ class GameUI:
         self.screen.blit(points_text, points_rect)
         
     def draw_enemy_info(self, enemy_wave, game_manager):
-        """Affiche les informations sur les ennemis"""
-        # Position en bas de l'UI
-        y_start = WINDOW_HEIGHT - 80
+        """Affiche les informations sur les ennemis et la vague"""
         x_start = BOARD_WIDTH + 10
         
+        # Affichage du numéro de la vague (en haut des informations)
+        y_start = WINDOW_HEIGHT - 120
+        wave_text = self.info_font.render(f"Vague {game_manager.get_current_wave()}", True, YELLOW)
+        self.screen.blit(wave_text, (x_start, y_start))
+        
+        # Informations sur les ennemis
+        y_start += 30
         # Nombre total d'ennemis dans la vague
         total_text = self.info_font.render(f"Total: {enemy_wave.get_total_enemies()}", True, WHITE)
         self.screen.blit(total_text, (x_start, y_start))
@@ -41,6 +46,11 @@ class GameUI:
         # Nombre d'ennemis tués
         killed_text = self.info_font.render(f"Tués: {game_manager.get_enemies_killed()}", True, WHITE)
         self.screen.blit(killed_text, (x_start, y_start + 40))
+        
+        # Si la vague est terminée, afficher un message
+        if game_manager.is_wave_completed():
+            next_wave_text = self.info_font.render("Prochaine vague...", True, GREEN)
+            self.screen.blit(next_wave_text, (x_start, y_start + 60))
         
     def draw_preview(self, pos):
         """Affiche un aperçu de la tour sélectionnée sous le curseur"""

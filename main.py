@@ -75,6 +75,36 @@ def run():
 
         # Mettre à jour la vague d'ennemis
         enemy_wave.update()
+        
+        # Si la vague est terminée, passer à la suivante
+        if enemy_wave.is_wave_complete():
+            game_manager.set_wave_completed(True)
+            pygame.time.wait(2000)  # Petite pause avant la prochaine vague
+            
+            # Réinitialiser la grille (enlève toutes les tours)
+            grid = grid_module.Grid(screen)
+            grid_data = grid.get_grid()
+            
+            # Générer un nouveau chemin aléatoire
+            track = track_module.Track(screen)
+            track.generate_random_track()
+            track_data = track.get_track()
+            
+            # Passer à la vague suivante
+            game_manager.next_wave()
+            
+            # Créer une nouvelle vague avec le nouveau chemin
+            # Augmenter progressivement le nombre d'ennemis et réduire le délai d'apparition
+            base_enemies = 25 + (game_manager.get_current_wave() - 1) * 5  # 5 ennemis de plus par vague
+            max_enemies = 50 + (game_manager.get_current_wave() - 1) * 5
+            base_delay = max(2000 - (game_manager.get_current_wave() - 1) * 100, 500)  # Réduit de 100ms par vague, minimum 500ms
+            
+            enemy_wave = EnemyWave(
+                screen, 
+                track_data, 
+                num_enemies=random.randint(base_enemies, max_enemies),
+                spawn_delay=random.randint(500, base_delay), 
+                game_manager=game_manager)
 
         clock.tick(60)
         pygame.display.flip()
