@@ -1,7 +1,11 @@
 import pygame
 from config.color import *
 from config.constants import *
-from enteties.tour_base import Tour
+from enteties.tours.tour_normal import TourNormal
+from enteties.tours.tour_power import TourPower
+from enteties.tours.tour_slow import TourSlow
+
+
 
 class Grid:
 
@@ -21,9 +25,16 @@ class Grid:
             for column in range(0, (BOARD_WIDTH//self.cell_size)):
                 if self.grid[row][column] == 0:
                     pygame.draw.rect(self.screen, DARK_GRAY, (self.cell_size*column, self.cell_size*row, self.cell_size, self.cell_size),1)
-                else:
-                    tour = Tour(self.screen, column, row)
-                    tour.draw()
+                elif self.grid[row][column]==1:
+                        tour = TourNormal(self.screen, column, row)
+                        tour.draw()
+                elif self.grid[row][column]==2:
+                        tour = TourPower(self.screen, column, row)
+                        tour.draw()
+                elif self.grid[row][column]==3:
+                        tour = TourSlow(self.screen, column, row)
+                        tour.draw()
+
 
     def get_grid(self):
         return self.grid

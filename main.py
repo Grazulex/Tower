@@ -31,13 +31,16 @@ def run():
                 exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
-                print(pos)
                 column = pos[0] // CELL_SIZE
                 row = pos[1] // CELL_SIZE
                 print(f"Clicked on cell: ({row}, {column})")
                 if (row, column) not in track_data:
-                    grid_data[row][column] = 1
-
+                    if grid_data[row][column] == 1:
+                        grid_data[row][column] = 2
+                    elif grid_data[row][column] == 2:
+                        grid_data[row][column] = 3
+                    else:
+                        grid_data[row][column] = 1
         screen.fill(BLACK)
         grid.draw()
         track.draw()
