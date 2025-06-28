@@ -42,7 +42,7 @@ class Grid:
             del self.towers[(row, column)]
             self.grid[row][column] = 0
 
-    def draw(self, enemies):
+    def draw(self, enemies, game_manager):
         # Dessiner la grille de base
         for row in range(0, (BOARD_HEIGHT//self.cell_size)):
             for column in range(0, (BOARD_WIDTH//self.cell_size)):
@@ -51,7 +51,7 @@ class Grid:
         
         # Dessiner toutes les tours existantes
         for tower in self.towers.values():
-            tower.draw(enemies)
+            tower.draw(enemies, game_manager)
 
 
     def get_grid(self):

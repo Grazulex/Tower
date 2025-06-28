@@ -10,10 +10,11 @@ class Tour:
         self.color = GREEN
         self.text_color = WHITE
         self.health = 1000
-        self.damage = 25
-        self.attack_speed = 1  # Attacks per second
-        self.last_attack_time = pygame.time.get_ticks()  # Initialiser avec le temps actuel
-        self.attack_range = TOUR_RANGE
+        self.damage = 35  # Augmenté pour plus d'impact
+        self.attack_speed = 1.0  # Attacks per second
+        self.last_attack_time = pygame.time.get_ticks()
+        self.attack_range = 60  # Portée standard
+        self.cost = 100  # Coût de base de la tour
         self.cell_size = CELL_SIZE
         self.font = pygame.font.SysFont(None, 12)
         
@@ -22,7 +23,7 @@ class Tour:
         self.attack_animation_duration = ATTACK_DURATION
         self.current_target = None
 
-    def draw(self, enemies):
+    def draw(self, enemies, game_manager):
         pygame.draw.rect(self.screen, self.color,
                          (self.cell_size * self.column, self.cell_size * self.row, self.cell_size, self.cell_size))
 

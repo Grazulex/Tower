@@ -5,14 +5,16 @@ from effects.particle import Particle
 
 
 class Enemy:
-    def __init__(self, screen, track_points):
+    def __init__(self, screen, track_points, game_manager=None):
         self.screen = screen
         self.track_points = track_points
+        self.game_manager = game_manager
         self.current_point_index = 0
         self.health = 100
         self.font = pygame.font.SysFont(None, 12)
         self.particles = []
         self.visible = True
+        self.points_value = 25  # Points de base pour tuer cet ennemi
         
         start_row, start_col = track_points[0]
         self.x = start_col * CELL_SIZE + CELL_SIZE // 2
@@ -84,6 +86,10 @@ class Enemy:
             particle = Particle(self.x, self.y, RED)  # Utilisons RED pour être sûr de la couleur
             self.particles.append(particle)
             print(f"Particle {i} created with color {RED}")
+        
+        # Ajouter les points au score quand l'ennemi est détruit
+        if self.game_manager and self.visible:  # On vérifie que l'ennemi n'a pas déjà été compté
+            self.game_manager.add_points(self.points_value)
         
         self.health = 0
         self.visible = False  # Cache l'ennemi mais garde sa position pour les particules
