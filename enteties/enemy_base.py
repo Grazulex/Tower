@@ -1,6 +1,7 @@
 import pygame
 from config.constants import *
 from config.color import *
+from effects.particle import Particle
 
 
 class Enemy:
@@ -10,6 +11,8 @@ class Enemy:
         self.current_point_index = 0
         self.health = 100
         self.font = pygame.font.SysFont(None, 12)
+        self.particles = []
+        self.visible = True
         
         start_row, start_col = track_points[0]
         self.x = start_col * CELL_SIZE + CELL_SIZE // 2
@@ -23,7 +26,8 @@ class Enemy:
         self.reached_end = False
 
     def move(self):
-        if self.reached_end:
+        # Vérifie si l'ennemi est mort ou a atteint la fin
+        if self.reached_end or self.health <= 0:
             return
 
         target_row, target_col = self.track_points[self.current_point_index]
@@ -44,10 +48,26 @@ class Enemy:
             self.y += (dy / distance) * self.speed
 
     def draw(self):
-        pygame.draw.circle(self.screen, self.color, (int(self.x), int(self.y)), self.radius)
-        text = self.font.render(str(self.health), True, self.text_color)
-        text_rect = text.get_rect(center=(int(self.x), int(self.y)))
-        self.screen.blit(text, text_rect)
+        # Dessine l'ennemi seulement s'il est visible
+        if self.visible:
+            pygame.draw.circle(self.screen, self.color, (int(self.x), int(self.y)), self.radius)
+            text = self.font.render(str(self.health), True, self.text_color)
+            text_rect = text.get_rect(center=(int(self.x), int(self.y)))
+            self.screen.blit(text, text_rect)
+        
+        # Mise à jour et dessin des particules
+        particles_alive = False
+        for particle in self.particles[:]: 
+            particle.update()
+            if particle.is_alive():
+                particle.draw(self.screen)
+                particles_alive = True
+            else:
+                self.particles.remove(particle)
+        
+        # Si toutes les particules sont mortes et l'ennemi n'est plus visible
+        if not particles_alive and not self.visible:
+            self.x = -100  # On déplace finalement l'ennemi hors de l'écran
 
     def is_active(self):
         return not self.reached_end and self.health > 0
@@ -58,5 +78,12 @@ class Enemy:
             self.remove()
 
     def remove(self):
+        print(f"Creating particles at position: ({self.x}, {self.y})")
+        # Création des particules de mort
+        for i in range(8):  # Réduire le nombre de particules
+            particle = Particle(self.x, self.y, RED)  # Utilisons RED pour être sûr de la couleur
+            self.particles.append(particle)
+            print(f"Particle {i} created with color {RED}")
+        
         self.health = 0
-        self.x = -100
+        self.visible = False  # Cache l'ennemi mais garde sa position pour les particules

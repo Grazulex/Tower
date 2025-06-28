@@ -27,14 +27,22 @@ class EnemyWave:
             self.enemies_spawned += 1
             self.last_spawn_time = current_time
         
-        active_enemies = []
+        # Garder une liste des ennemis à retirer
+        enemies_to_remove = []
+        
         for enemy in self.enemies:
             if enemy.is_active():
                 enemy.move()
-                enemy.draw()
-                active_enemies.append(enemy)
+            # Dessiner tous les ennemis, même ceux qui ne sont plus actifs
+            enemy.draw()
+            
+            # Si l'ennemi n'est plus actif et n'a plus de particules, on le marque pour suppression
+            if not enemy.is_active() and not enemy.particles:
+                enemies_to_remove.append(enemy)
         
-        self.enemies = active_enemies
+        # Retirer les ennemis qui n'ont plus de particules
+        for enemy in enemies_to_remove:
+            self.enemies.remove(enemy)
         
     def is_wave_complete(self):
         return self.enemies_spawned >= self.num_enemies and len(self.enemies) == 0

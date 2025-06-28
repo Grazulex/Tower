@@ -59,7 +59,6 @@ class Tour:
                 if self.is_attacking:
                     attack_animation_time = current_time - self.last_attack_time
                     if attack_animation_time <= self.attack_animation_duration:
-                        # Ligne plus épaisse pour l'attaque
                         pygame.draw.line(self.screen, RED, (center_x, center_y),
                                        (self.current_target.x, self.current_target.y), 3)
                     else:
