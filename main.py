@@ -88,8 +88,20 @@ def run():
                 exit()
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                 game_state.set_state(GameState.PLAYING)
-                # Créer un nouveau GameManager pour une nouvelle partie
+                # Créer un nouveau GameManager et réinitialiser les composants
                 game_manager = GameManager()
+                grid = grid_module.Grid(screen)
+                grid_data = grid.get_grid()
+                track = track_module.Track(screen)
+                track.generate_random_track()
+                track_data = track.get_track()
+                enemy_wave = EnemyWave(
+                    screen,
+                    track_data,
+                    num_enemies=random.randint(25, 50),
+                    spawn_delay=random.randint(500, 2000),
+                    game_manager=game_manager
+                )
 
     # Main game loop
     while True:
@@ -157,6 +169,7 @@ def run():
                             game_state.set_state(GameState.MENU)
                             # Créer un nouveau GameManager pour une nouvelle partie
                             game_manager = GameManager()
+                            # Créer une nouvelle vague d'ennemis avec le nouveau game_manager
                             # Reset game components
                             grid = grid_module.Grid(screen)
                             grid_data = grid.get_grid()
