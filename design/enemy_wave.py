@@ -3,6 +3,7 @@ import random
 from enteties.enemies.enemy_normal import EnemyNormal
 from enteties.enemies.enemy_big import EnemyBig
 from enteties.enemies.enemy_small import EnemySmall
+from enteties.enemies.enemy_slow import EnemySlow
 
 class EnemyWave:
     """
@@ -51,7 +52,7 @@ class EnemyWave:
 
         if (self.enemies_spawned < self.num_enemies and
             current_time - self.last_spawn_time >= self.spawn_delay):
-            enemy_class = random.choice([EnemyNormal, EnemyBig, EnemySmall])
+            enemy_class = random.choice([EnemyNormal, EnemyBig, EnemySmall, EnemySlow])
             enemy = enemy_class(self.screen, self.track_points, self.game_manager)
             self.enemies.append(enemy)
             self.enemies_spawned += 1

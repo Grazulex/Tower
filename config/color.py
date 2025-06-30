@@ -12,6 +12,7 @@ GREEN = (152, 219, 168)  # Vert menthe pastel
 BLUE = (145, 184, 219)  # Bleu ciel pastel
 YELLOW = (255, 223, 163)  # Jaune pêche pastel
 RED = (255, 175, 163)  # Rouge saumon pastel
+PURPLE = (187, 169, 219)  # Violet lavande pastel
 
 # Couleurs additionnelles pour les particules et effets
 PURPLE = (187, 169, 219)  # Violet lavande

@@ -89,10 +89,10 @@ def run():
 
         # Display welcome message
         font = pygame.font.Font(None, 74)
-        text = font.render('Bienvenue au jeu!', True, WHITE)
+        text = font.render('Welcome to the game!', True, WHITE)
         screen.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, WINDOW_HEIGHT // 3))
 
-        play_text = font.render('Appuyez sur Entrée pour commencer', True, WHITE)
+        play_text = font.render('Press Enter to start', True, WHITE)
         screen.blit(play_text, (WINDOW_WIDTH // 2 - play_text.get_width() // 2, WINDOW_HEIGHT // 2))
 
         pygame.display.flip()
@@ -177,7 +177,7 @@ def run():
                 
                 # Add instruction text
                 font = pygame.font.Font(None, 36)
-                text = font.render('Appuyez sur Entrée pour retourner au menu', True, WHITE)
+                text = font.render('Press Enter to return to the menu', True, WHITE)
                 text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT - 100))
                 screen.blit(text, text_rect)
                 
@@ -234,6 +234,7 @@ def run():
             track_data = track.get_track()
 
             game_manager.next_wave()  # Progress to the next wave
+            game_manager.add_points(game_manager.get_lives()*10) # Add points for completing the wave
 
             # Generate new enemy wave parameters
             base_enemies = 25 + (game_manager.get_current_wave() - 1) * 5

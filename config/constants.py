@@ -52,6 +52,12 @@ SMALL_ENEMY_HEALTH = 75  # Health points of small enemies
 SMALL_ENEMY_SPEED_MULTIPLIER = 2.5  # Speed multiplier for small enemies
 SMALL_ENEMY_POINTS = 35  # Points awarded for defeating small enemies
 
+# Slow Enemy Properties
+SLOW_ENEMY_RADIUS_MULTIPLIER = 1.5  # Size multiplier for slow enemies
+SLOW_ENEMY_HEALTH = 500  # Health points of slow enemies
+SLOW_ENEMY_SPEED_MULTIPLIER = 0.2  # Speed multiplier for slow enemies
+SLOW_ENEMY_POINTS = 100  # Points awarded for defeating slow enemies
+
 # Big Enemy Properties
 BIG_ENEMY_RADIUS_MULTIPLIER = 1.2  # Size multiplier for big enemies
 BIG_ENEMY_HEALTH = 300  # Health points of big enemies

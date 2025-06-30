@@ -74,15 +74,15 @@ class GameUI:
         text_rect = game_over_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 3))
         self.screen.blit(game_over_text, text_rect)
 
-        points_text = self.font.render(f"Score final: {game_manager.get_points()}", True, YELLOW)
+        points_text = self.font.render(f"Score: {game_manager.get_points()}", True, YELLOW)
         points_rect = points_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2))
         self.screen.blit(points_text, points_rect)
 
-        wave_text = self.font.render(f"Vague atteinte: {game_manager.get_current_wave()}", True, WHITE)
+        wave_text = self.font.render(f"Wave reached: {game_manager.get_current_wave()}", True, WHITE)
         wave_rect = wave_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + 40))
         self.screen.blit(wave_text, wave_rect)
 
-        kills_text = self.font.render(f"Ennemis tués: {game_manager.get_enemies_killed()}", True, WHITE)
+        kills_text = self.font.render(f"Enemies killed: {game_manager.get_enemies_killed()}", True, WHITE)
         kills_rect = kills_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + 80))
         self.screen.blit(kills_text, kills_rect)
 

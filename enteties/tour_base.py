@@ -123,18 +123,23 @@ class Tour:
             if enemies_in_range:
                 current_time = pygame.time.get_ticks()
 
-                attack_delay = (1 / self.attack_speed) * 1000
-                time_since_last_attack = current_time - self.last_attack_time
-                if time_since_last_attack >= attack_delay:
-                    target = min(enemies_in_range, key=lambda e: e.health)
-                    self.attack(target)
-                    self.last_attack_time = current_time
-                    self.play_attack_sound()
+                # Filtrer les ennemis valides (vivants et visibles)
+                valid_enemies = [e for e in enemies_in_range if e.visible and e.health > 0]
+                
+                if valid_enemies:
+                    attack_delay = (1 / self.attack_speed) * 1000
+                    time_since_last_attack = current_time - self.last_attack_time
+                    if time_since_last_attack >= attack_delay:
+                        target = min(valid_enemies, key=lambda e: e.health)
+                        # Vérifier une dernière fois que la cible est toujours valide
+                        if target.visible and target.health > 0:
+                            self.attack(target)
+                            self.last_attack_time = current_time
+                            self.play_attack_sound()
+                            self.is_attacking = True
+                            self.current_target = target
 
-                    self.is_attacking = True
-                    self.current_target = target
-
-                if self.is_attacking:
+                if self.is_attacking and self.current_target and self.current_target.visible:
                     attack_animation_time = current_time - self.last_attack_time
                     if attack_animation_time <= self.attack_animation_duration:
                         pygame.draw.line(self.screen, RED, (center_x, center_y),
@@ -142,6 +147,9 @@ class Tour:
                     else:
                         self.is_attacking = False
                         self.current_target = None
+                else:
+                    self.is_attacking = False
+                    self.current_target = None
 
     def attack(self, enemy):
         """
