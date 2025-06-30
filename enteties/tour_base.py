@@ -83,7 +83,7 @@ class Tour:
                 attack_delay = (1 / self.attack_speed) * 1000
                 time_since_last_attack = current_time - self.last_attack_time
                 if time_since_last_attack >= attack_delay:
-                    target = min(enemies_in_range, key=lambda e: ((e.x - center_x)**2 + (e.y - center_y)**2))
+                    target = min(enemies_in_range, key=lambda e: e.health)
                     self.attack(target)
                     self.last_attack_time = current_time
 

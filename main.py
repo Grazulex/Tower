@@ -30,6 +30,7 @@ import design.track as track_module
 from design.enemy_wave import EnemyWave
 from ui.game_ui import GameUI
 from game.game_manager import GameManager
+from game.game_state import GameState
 
 def run():
     """
@@ -44,6 +45,9 @@ def run():
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))  # Create the game window
     pygame.display.set_caption(TITLE)  # Set the window title
     clock = pygame.time.Clock()  # Initialize the game clock
+
+    # Initialize game state
+    game_state = GameState()
 
     # Initialize game components
     grid = grid_module.Grid(screen)
@@ -63,6 +67,29 @@ def run():
         spawn_delay=random.randint(500, 2000),
         game_manager=game_manager
     )
+
+    # Welcome screen loop
+    while game_state.get_state() == GameState.MENU:
+        screen.fill(BLACK)
+
+        # Display welcome message
+        font = pygame.font.Font(None, 74)
+        text = font.render('Bienvenue au jeu!', True, WHITE)
+        screen.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, WINDOW_HEIGHT // 3))
+
+        play_text = font.render('Appuyez sur Entrée pour commencer', True, WHITE)
+        screen.blit(play_text, (WINDOW_WIDTH // 2 - play_text.get_width() // 2, WINDOW_HEIGHT // 2))
+
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                game_state.set_state(GameState.PLAYING)
+                # Créer un nouveau GameManager pour une nouvelle partie
+                game_manager = GameManager()
 
     # Main game loop
     while True:
@@ -97,16 +124,52 @@ def run():
         # Draw UI elements
         game_ui.draw_points(game_manager.get_points())
         game_ui.draw_lives(game_manager.get_lives())
+        game_ui.draw_high_score(game_state.get_high_score())
         game_ui.draw_tower_buttons(game_manager.get_points())
         game_ui.draw_enemy_info(enemy_wave, game_manager)
 
         # Check for game over
         if game_manager.is_game_over():
-            game_ui.draw_game_over(game_manager)
-            pygame.display.flip()
-            pygame.time.wait(3000)
-            pygame.quit()
-            exit()
+            # Update high score
+            if game_state.update_high_score(game_manager.get_points()):
+                print('New high score!')
+            game_state.set_state(GameState.GAME_OVER)
+
+            # Game over screen loop
+            while game_state.get_state() == GameState.GAME_OVER:
+                screen.fill(BLACK)
+                game_ui.draw_game_over(game_manager)
+                
+                # Add instruction text
+                font = pygame.font.Font(None, 36)
+                text = font.render('Appuyez sur Entrée pour retourner au menu', True, WHITE)
+                text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT - 100))
+                screen.blit(text, text_rect)
+                
+                pygame.display.flip()
+                
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        exit()
+                    elif event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_RETURN:
+                            game_state.set_state(GameState.MENU)
+                            # Créer un nouveau GameManager pour une nouvelle partie
+                            game_manager = GameManager()
+                            # Reset game components
+                            grid = grid_module.Grid(screen)
+                            grid_data = grid.get_grid()
+                            track = track_module.Track(screen)
+                            track.generate_random_track()
+                            track_data = track.get_track()
+                            enemy_wave = EnemyWave(
+                                screen,
+                                track_data,
+                                num_enemies=random.randint(25, 50),
+                                spawn_delay=random.randint(500, 2000),
+                                game_manager=game_manager
+                            )
 
         # Draw tower preview if a tower is selected
         if game_ui.get_selected_tower() is not None:

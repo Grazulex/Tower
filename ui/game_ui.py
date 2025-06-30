@@ -47,7 +47,7 @@ class GameUI:
             points (int): The player's current points.
         """
         points_text = self.font.render(f"Points: {points}", True, WHITE)
-        points_rect = points_text.get_rect(topright=(WINDOW_WIDTH - 10, 10))
+        points_rect = points_text.get_rect(topright=(BOARD_WIDTH - 10, 10))
         self.screen.blit(points_text, points_rect)
 
     def draw_lives(self, lives):
@@ -59,7 +59,7 @@ class GameUI:
         """
         lives_text = self.font.render(f"Lives: {lives}", True,
                                     RED if lives < 5 else WHITE)
-        lives_rect = lives_text.get_rect(topright=(WINDOW_WIDTH - 10, 50))
+        lives_rect = lives_text.get_rect(topright=(BOARD_WIDTH - 10, 50))
         self.screen.blit(lives_text, lives_rect)
 
     def draw_game_over(self, game_manager):
@@ -69,22 +69,21 @@ class GameUI:
         Args:
             game_manager (GameManager): The game manager instance providing game statistics.
         """
-        overlay = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
-        overlay.fill(BLACK)
-        overlay.set_alpha(128)
-        self.screen.blit(overlay, (0, 0))
-
         game_over_font = pygame.font.SysFont(None, 72)
         game_over_text = game_over_font.render("GAME OVER", True, RED)
-        text_rect = game_over_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 - 50))
+        text_rect = game_over_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 3))
         self.screen.blit(game_over_text, text_rect)
 
-        wave_text = self.font.render(f"Wave reached: {game_manager.get_current_wave()}", True, WHITE)
-        wave_rect = wave_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + 10))
+        points_text = self.font.render(f"Score final: {game_manager.get_points()}", True, YELLOW)
+        points_rect = points_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2))
+        self.screen.blit(points_text, points_rect)
+
+        wave_text = self.font.render(f"Vague atteinte: {game_manager.get_current_wave()}", True, WHITE)
+        wave_rect = wave_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + 40))
         self.screen.blit(wave_text, wave_rect)
 
-        kills_text = self.font.render(f"Enemies killed: {game_manager.get_enemies_killed()}", True, WHITE)
-        kills_rect = kills_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + 50))
+        kills_text = self.font.render(f"Ennemis tués: {game_manager.get_enemies_killed()}", True, WHITE)
+        kills_rect = kills_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + 80))
         self.screen.blit(kills_text, kills_rect)
 
     def draw_enemy_info(self, enemy_wave, game_manager):
@@ -132,12 +131,19 @@ class GameUI:
             preview_surface.fill((color[0], color[1], color[2], 128))
             self.screen.blit(preview_surface, (cell_x, cell_y))
 
-    def draw_tower_buttons(self, current_points):
+    def draw_high_score(self, high_score):
+        """Draw the high score on the screen."""
+        font = pygame.font.Font(None, 36)
+        text = font.render(f'High Score: {high_score}', True, WHITE)
+        text_rect = text.get_rect(topleft=(10, 10))
+        self.screen.blit(text, text_rect)
+
+    def draw_tower_buttons(self, points):
         """
         Draws buttons for selecting towers based on the player's current points.
 
         Args:
-            current_points (int): The player's current points.
+            points (int): The player's current points.
         """
         self.tower_buttons.clear()
 
@@ -146,7 +152,7 @@ class GameUI:
         for i, tower_type in enumerate(TowerType.get_all_towers()):
             cost = tower_type.get_cost()
             color = tower_type.get_color()
-            can_afford = current_points >= cost
+            can_afford = points >= cost
 
             ui_x = BOARD_WIDTH + 10
             y = y_start + i * (self.button_size + self.button_padding)

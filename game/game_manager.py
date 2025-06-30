@@ -1,3 +1,5 @@
+from config.constants import STARTING_POINTS, STARTING_LIVES
+
 class GameManager:
     """
     Manages the state and progression of the game.
@@ -18,11 +20,11 @@ class GameManager:
         """
         Initializes a GameManager instance with default values.
         """
-        self.points = 300
+        self.points = STARTING_POINTS
         self.enemies_killed = 0
         self.current_wave = 1
         self.wave_completed = False
-        self.lives = 20
+        self.lives = STARTING_LIVES
         self.game_over = False
 
     def lose_life(self):
@@ -68,13 +70,16 @@ class GameManager:
         return self.current_wave
 
     def set_wave_completed(self, completed):
-        """
-        Sets the wave completion status.
-
-        Args:
-            completed (bool): True if the wave is completed, False otherwise.
-        """
         self.wave_completed = completed
+
+    def reset_game(self):
+        """Reset the game state for a new game."""
+        self.points = STARTING_POINTS
+        self.lives = STARTING_LIVES
+        self.current_wave = 1
+        self.enemies_killed = 0
+        self.wave_completed = False
+        self.game_over = False
 
     def is_wave_completed(self):
         """
