@@ -1,13 +1,39 @@
 from enteties.enemy_base import Enemy
-from config.constants import *
+from config.constants import (ENEMY_RADIUS, ENEMY_SPEED,
+                            SMALL_ENEMY_RADIUS_MULTIPLIER, SMALL_ENEMY_HEALTH,
+                            SMALL_ENEMY_SPEED_MULTIPLIER, SMALL_ENEMY_POINTS)
 from config.color import *
 
 class EnemySmall(Enemy):
-    def __init__(self, screen, track_points, game_manager=None):
+    """
+    Represents a smaller and faster enemy in the game.
+
+    Inherits from the base Enemy class and modifies attributes to reflect
+    its unique characteristics, such as reduced health, increased speed,
+    and moderate point value.
+
+    Attributes:
+        color (tuple): The color of the enemy (RGB format).
+        radius (float): The radius of the enemy's representation.
+        text_color (tuple): The color of the text displaying the enemy's health.
+        health (int): The health of the enemy.
+        speed (float): The speed of the enemy's movement.
+        points_value (int): The points awarded for defeating the enemy.
+    """
+
+    def __init__(self, screen, track_points, game_manager):
+        """
+        Initializes an EnemySmall instance.
+
+        Args:
+            screen (pygame.Surface): The game screen where the enemy is drawn.
+            track_points (list): The points defining the track for enemy movement.
+            game_manager (GameManager, optional): The game manager handling game state.
+        """
         Enemy.__init__(self, screen, track_points, game_manager)
         self.color = GREEN
-        self.radius = ENEMY_RADIUS*0.8
+        self.radius = ENEMY_RADIUS * SMALL_ENEMY_RADIUS_MULTIPLIER
         self.text_color = WHITE
-        self.health = 75  # Augmentée
-        self.speed = ENEMY_SPEED * 2.5  # Plus rapide
-        self.points_value = 35  # Plus de points car difficile à toucher
+        self.health = SMALL_ENEMY_HEALTH
+        self.speed = ENEMY_SPEED * SMALL_ENEMY_SPEED_MULTIPLIER
+        self.points_value = SMALL_ENEMY_POINTS

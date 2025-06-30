@@ -1,75 +1,148 @@
-from enteties.tours.tour_normal import TourNormal
-from enteties.tours.tour_power import TourPower
-from enteties.tours.tour_slow import TourSlow
-
 class GameManager:
+    """
+    Manages the state and progression of the game.
+
+    This class handles various aspects of the game, such as player points,
+    waves, lives, and interactions with towers and enemies.
+
+    Attributes:
+        points (int): The player's current points.
+        enemies_killed (int): The total number of enemies killed by the player.
+        current_wave (int): The current wave number.
+        wave_completed (bool): Indicates whether the current wave is completed.
+        lives (int): The number of lives remaining for the player.
+        game_over (bool): Indicates whether the game is over.
+    """
+
     def __init__(self):
-        self.points = 300  # Points de départ
+        """
+        Initializes a GameManager instance with default values.
+        """
+        self.points = 300
         self.enemies_killed = 0
         self.current_wave = 1
-        self.wave_completed = False  # Flag pour indiquer si la vague actuelle est terminée
-        self.lives = 20  # Nombre de vies au départ
+        self.wave_completed = False
+        self.lives = 20
         self.game_over = False
-        
+
     def lose_life(self):
-        """Perd une vie et vérifie si le jeu est terminé"""
+        """
+        Decreases the player's lives by one. Ends the game if lives reach zero.
+        """
         self.lives -= 1
         if self.lives <= 0:
             self.game_over = True
-            
+
     def get_lives(self):
-        """Retourne le nombre de vies restantes"""
+        """
+        Retrieves the number of lives remaining.
+
+        Returns:
+            int: The number of lives.
+        """
         return self.lives
-        
+
     def is_game_over(self):
-        """Vérifie si le jeu est terminé"""
+        """
+        Checks if the game is over.
+
+        Returns:
+            bool: True if the game is over, False otherwise.
+        """
         return self.game_over
-        
+
     def next_wave(self):
-        """Passe à la vague suivante"""
+        """
+        Advances to the next wave and resets the wave completion status.
+        """
         self.current_wave += 1
         self.wave_completed = False
-        
+
     def get_current_wave(self):
-        """Retourne le numéro de la vague actuelle"""
+        """
+        Retrieves the current wave number.
+
+        Returns:
+            int: The current wave number.
+        """
         return self.current_wave
-        
+
     def set_wave_completed(self, completed):
-        """Définit si la vague actuelle est terminée"""
+        """
+        Sets the wave completion status.
+
+        Args:
+            completed (bool): True if the wave is completed, False otherwise.
+        """
         self.wave_completed = completed
-        
+
     def is_wave_completed(self):
-        """Vérifie si la vague actuelle est terminée"""
+        """
+        Checks if the current wave is completed.
+
+        Returns:
+            bool: True if the wave is completed, False otherwise.
+        """
         return self.wave_completed
-        
+
     def add_points(self, amount):
-        """Ajoute des points au joueur"""
+        """
+        Adds points to the player's total.
+
+        Args:
+            amount (int): The number of points to add.
+        """
         self.points += amount
-        print(f"Points gagnés: {amount}. Total: {self.points}")
-        
+
     def can_afford_tower(self, tower_class):
-        """Vérifie si le joueur peut acheter une tour"""
-        dummy_tower = tower_class(None, 0, 0)  # Création temporaire pour accéder au coût
+        """
+        Checks if the player can afford a tower of the specified class.
+
+        Args:
+            tower_class (Type): The class of the tower to check.
+
+        Returns:
+            bool: True if the player can afford the tower, False otherwise.
+        """
+        dummy_tower = tower_class(None, 0, 0)
         return self.points >= dummy_tower.cost
-        
+
     def buy_tower(self, tower_class):
-        """Tente d'acheter une tour. Retourne True si l'achat est réussi"""
+        """
+        Attempts to purchase a tower of the specified class.
+
+        Args:
+            tower_class (Type): The class of the tower to purchase.
+
+        Returns:
+            bool: True if the tower was successfully purchased, False otherwise.
+        """
         if self.can_afford_tower(tower_class):
             dummy_tower = tower_class(None, 0, 0)
             self.points -= dummy_tower.cost
-            print(f"Tour achetée! Points restants: {self.points}")
             return True
-        print(f"Pas assez de points! Points disponibles: {self.points}")
         return False
-        
+
     def get_points(self):
-        """Retourne le nombre de points actuel"""
+        """
+        Retrieves the player's current points.
+
+        Returns:
+            int: The player's points.
+        """
         return self.points
-        
+
     def enemy_killed(self):
-        """Incrémente le compteur d'ennemis tués"""
+        """
+        Increments the count of enemies killed by the player.
+        """
         self.enemies_killed += 1
-        
+
     def get_enemies_killed(self):
-        """Retourne le nombre d'ennemis tués"""
+        """
+        Retrieves the total number of enemies killed.
+
+        Returns:
+            int: The number of enemies killed.
+        """
         return self.enemies_killed

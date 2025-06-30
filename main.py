@@ -1,3 +1,25 @@
+"""
+main.py
+
+This script initializes and runs a tower defense game using the Pygame library.
+It handles game setup, user interactions, game logic, and rendering.
+
+Modules:
+- pygame: Used for game rendering and event handling.
+- random: Used for generating random values for enemy waves and track generation.
+- sys: Used for exiting the program.
+- config.constants: Contains game constants like window dimensions and title.
+- config.color: Contains color definitions used in the game.
+- design.grid: Manages the game grid where towers are placed.
+- design.track: Manages the track for enemy movement.
+- design.enemy_wave: Handles enemy wave generation and updates.
+- ui.game_ui: Manages the user interface elements.
+- game.game_manager: Handles game state, points, lives, and wave progression.
+
+Functions:
+- run(): Initializes the game, handles the main game loop, and manages game logic.
+"""
+
 import pygame
 import random
 from sys import exit
@@ -8,21 +30,25 @@ import design.track as track_module
 from design.enemy_wave import EnemyWave
 from ui.game_ui import GameUI
 from game.game_manager import GameManager
-from enteties.tours.tour_normal import TourNormal
-from enteties.tours.tour_power import TourPower
-from enteties.tours.tour_slow import TourSlow
-
 
 def run():
-    pygame.init()
-    screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-    pygame.display.set_caption(TITLE)
-    clock = pygame.time.Clock()
+    """
+    Initializes and runs the main game loop.
 
+    Sets up the game window, initializes game components, and handles user input,
+    game logic, and rendering.
+
+    The game loop continues until the user quits or the game ends.
+    """
+    pygame.init()
+    screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))  # Create the game window
+    pygame.display.set_caption(TITLE)  # Set the window title
+    clock = pygame.time.Clock()  # Initialize the game clock
+
+    # Initialize game components
     grid = grid_module.Grid(screen)
     grid_data = grid.get_grid()
 
-    # Initialisation de l'UI et du GameManager
     game_ui = GameUI(screen)
     game_manager = GameManager()
 
@@ -30,94 +56,95 @@ def run():
     track.generate_random_track()
     track_data = track.get_track()
 
-    # Créer une vague d'ennemis
-    enemy_wave = EnemyWave(screen, track_data, num_enemies=random.randint(25,50), spawn_delay=random.randint(500, 2000), game_manager=game_manager)
+    enemy_wave = EnemyWave(
+        screen,
+        track_data,
+        num_enemies=random.randint(25, 50),
+        spawn_delay=random.randint(500, 2000),
+        game_manager=game_manager
+    )
 
+    # Main game loop
     while True:
+        # Event handling
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT:  # Quit event
                 pygame.quit()
                 exit()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.type == pygame.MOUSEBUTTONDOWN:  # Mouse click event
                 pos = pygame.mouse.get_pos()
-                
-                # D'abord, vérifier si on clique sur un bouton de tour
+
+                # Handle UI button clicks
                 game_ui.handle_click(pos, game_manager.get_points())
-                
-                # Si on n'a pas cliqué sur un bouton et qu'une tour est sélectionnée,
-                # essayer de placer la tour
+
+                # Handle tower placement
                 if not any(button[0].collidepoint(pos) for button in game_ui.tower_buttons) and game_ui.get_selected_tower() is not None:
                     column = pos[0] // CELL_SIZE
                     row = pos[1] // CELL_SIZE
-                    print(f"Trying to place tower at: ({row}, {column})")
-                    
+
+                    # Check if the cell is valid for tower placement
                     if (row, column) not in track_data and grid_data[row][column] == 0:
                         tower_type = game_ui.get_selected_tower()
-                        if game_manager.buy_tower(tower_type.tower_class):
+                        if game_manager.buy_tower(tower_type.tower_class):  # Check if the player can afford the tower
                             grid.add_tower(row, column, tower_type.grid_type)
-                            print(f"Adding {tower_type.name.lower()} tower")
-                            # Garder la sélection pour pouvoir placer plusieurs tours du même type
-                    
-                    # Mettre à jour grid_data avec le nouveau type
                     grid_data = grid.get_grid()
-        screen.fill(BLACK)
-        grid.draw(enemy_wave.get_enemies(), game_manager)
-        track.draw()
 
-        # Afficher l'interface utilisateur
+        # Game rendering
+        screen.fill(BLACK)  # Clear the screen
+        grid.draw(enemy_wave.get_enemies(), game_manager)  # Draw the grid and towers
+        track.draw()  # Draw the track
+
+        # Draw UI elements
         game_ui.draw_points(game_manager.get_points())
         game_ui.draw_lives(game_manager.get_lives())
         game_ui.draw_tower_buttons(game_manager.get_points())
         game_ui.draw_enemy_info(enemy_wave, game_manager)
-        
-# Si game over, afficher l'écran de fin
+
+        # Check for game over
         if game_manager.is_game_over():
             game_ui.draw_game_over(game_manager)
             pygame.display.flip()
-            pygame.time.wait(3000)  # Attendre 3 secondes
+            pygame.time.wait(3000)
             pygame.quit()
             exit()
-        
-        # Afficher l'aperçu de la tour sélectionnée
+
+        # Draw tower preview if a tower is selected
         if game_ui.get_selected_tower() is not None:
             game_ui.draw_preview(pygame.mouse.get_pos())
 
-        # Mettre à jour la vague d'ennemis
+        # Update enemy wave
         enemy_wave.update()
-        
-        # Si la vague est terminée, passer à la suivante
+
+        # Handle wave completion
         if enemy_wave.is_wave_complete():
             game_manager.set_wave_completed(True)
-            pygame.time.wait(2000)  # Petite pause avant la prochaine vague
-            
-            # Réinitialiser la grille (enlève toutes les tours)
+            pygame.time.wait(2000)
+
+            # Reset grid and track for the next wave
             grid = grid_module.Grid(screen)
             grid_data = grid.get_grid()
-            
-            # Générer un nouveau chemin aléatoire
+
             track = track_module.Track(screen)
             track.generate_random_track()
             track_data = track.get_track()
-            
-            # Passer à la vague suivante
-            game_manager.next_wave()
-            
-            # Créer une nouvelle vague avec le nouveau chemin
-            # Augmenter progressivement le nombre d'ennemis et réduire le délai d'apparition
-            base_enemies = 25 + (game_manager.get_current_wave() - 1) * 5  # 5 ennemis de plus par vague
-            max_enemies = 50 + (game_manager.get_current_wave() - 1) * 5
-            base_delay = max(2000 - (game_manager.get_current_wave() - 1) * 100, 500)  # Réduit de 100ms par vague, minimum 500ms
-            
-            enemy_wave = EnemyWave(
-                screen, 
-                track_data, 
-                num_enemies=random.randint(base_enemies, max_enemies),
-                spawn_delay=random.randint(500, base_delay), 
-                game_manager=game_manager)
 
-        clock.tick(60)
-        pygame.display.flip()
+            game_manager.next_wave()  # Progress to the next wave
+
+            # Generate new enemy wave parameters
+            base_enemies = 25 + (game_manager.get_current_wave() - 1) * 5
+            max_enemies = 50 + (game_manager.get_current_wave() - 1) * 5
+            base_delay = max(2000 - (game_manager.get_current_wave() - 1) * 100, 500)
+
+            enemy_wave = EnemyWave(
+                screen,
+                track_data,
+                num_enemies=random.randint(base_enemies, max_enemies),
+                spawn_delay=random.randint(500, base_delay),
+                game_manager=game_manager
+            )
+
+        clock.tick(60)  # Limit the frame rate to 60 FPS
+        pygame.display.flip()  # Update the display
 
 if __name__ == "__main__":
     run()
-

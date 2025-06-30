@@ -3,9 +3,38 @@ from config.constants import *
 from config.color import *
 from effects.particle import Particle
 
-
 class Enemy:
-    def __init__(self, screen, track_points, game_manager=None):
+    """
+    Represents an enemy in the game.
+
+    Attributes:
+        screen (pygame.Surface): The game screen where the enemy is drawn.
+        track_points (list): The points defining the track for enemy movement.
+        game_manager (GameManager): The game manager handling game state (optional).
+        current_point_index (int): The index of the current track point the enemy is moving towards.
+        health (int): The health of the enemy.
+        font (pygame.font.Font): The font used to display the enemy's health.
+        particles (list): A list of particles for visual effects when the enemy is removed.
+        visible (bool): Whether the enemy is visible on the screen.
+        points_value (int): The points awarded for defeating the enemy.
+        x (float): The x-coordinate of the enemy's position.
+        y (float): The y-coordinate of the enemy's position.
+        radius (int): The radius of the enemy's representation.
+        color (tuple): The color of the enemy (RGB format).
+        text_color (tuple): The color of the text displaying the enemy's health.
+        speed (float): The speed of the enemy's movement.
+        reached_end (bool): Whether the enemy has reached the end of the track.
+    """
+
+    def __init__(self, screen, track_points, game_manager):
+        """
+        Initializes an Enemy instance.
+
+        Args:
+            screen (pygame.Surface): The game screen where the enemy is drawn.
+            track_points (list): The points defining the track for enemy movement.
+            game_manager (GameManager): The game manager handling game state.
+        """
         self.screen = screen
         self.track_points = track_points
         self.game_manager = game_manager
@@ -14,21 +43,26 @@ class Enemy:
         self.font = pygame.font.SysFont(None, 12)
         self.particles = []
         self.visible = True
-        self.points_value = 25  # Points de base pour tuer cet ennemi
-        
+        self.points_value = 25
+
         start_row, start_col = track_points[0]
         self.x = start_col * CELL_SIZE + CELL_SIZE // 2
         self.y = start_row * CELL_SIZE + CELL_SIZE // 2
-        
+
         self.radius = ENEMY_RADIUS
         self.color = RED
         self.text_color = BLACK
         self.speed = ENEMY_SPEED
-        
+
         self.reached_end = False
 
     def move(self):
-        # Vérifie si l'ennemi est mort ou a atteint la fin
+        """
+        Moves the enemy along the track.
+
+        Updates the enemy's position based on its speed and the target track point.
+        Marks the enemy as having reached the end if it completes the track.
+        """
         if self.reached_end or self.health <= 0:
             return
 
@@ -50,47 +84,62 @@ class Enemy:
             self.y += (dy / distance) * self.speed
 
     def draw(self):
-        # Dessine l'ennemi seulement s'il est visible
+        """
+        Draws the enemy and its particles on the screen.
+
+        Displays the enemy's health and handles particle effects when the enemy is removed.
+        """
         if self.visible:
             pygame.draw.circle(self.screen, self.color, (int(self.x), int(self.y)), self.radius)
             text = self.font.render(str(self.health), True, self.text_color)
             text_rect = text.get_rect(center=(int(self.x), int(self.y)))
             self.screen.blit(text, text_rect)
-        
-        # Mise à jour et dessin des particules
+
         particles_alive = False
-        for particle in self.particles[:]: 
+        for particle in self.particles[:]:
             particle.update()
             if particle.is_alive():
                 particle.draw(self.screen)
                 particles_alive = True
             else:
                 self.particles.remove(particle)
-        
-        # Si toutes les particules sont mortes et l'ennemi n'est plus visible
+
         if not particles_alive and not self.visible:
-            self.x = -100  # On déplace finalement l'ennemi hors de l'écran
+            self.x = -100
 
     def is_active(self):
+        """
+        Checks if the enemy is active.
+
+        Returns:
+            bool: True if the enemy has not reached the end and has health remaining, False otherwise.
+        """
         return not self.reached_end and self.health > 0
 
     def take_damage(self, damage):
+        """
+        Reduces the enemy's health by the specified damage amount.
+
+        Args:
+            damage (int): The amount of damage to inflict on the enemy.
+        """
         self.health -= damage
         if self.health <= 0:
             self.remove()
 
     def remove(self):
-        print(f"Creating particles at position: ({self.x}, {self.y})")
-        # Création des particules de mort
-        for i in range(8):  # Réduire le nombre de particules
-            particle = Particle(self.x, self.y, RED)  # Utilisons RED pour être sûr de la couleur
+        """
+        Removes the enemy from the game.
+
+        Triggers particle effects and updates the game manager with points and enemy kill count.
+        """
+        for i in range(8):
+            particle = Particle(self.x, self.y, RED)
             self.particles.append(particle)
-            print(f"Particle {i} created with color {RED}")
-        
-        # Ajouter les points au score et incrémenter le compteur d'ennemis tués
-        if self.game_manager and self.visible:  # On vérifie que l'ennemi n'a pas déjà été compté
+
+        if self.game_manager and self.visible:
             self.game_manager.add_points(self.points_value)
             self.game_manager.enemy_killed()
-        
+
         self.health = 0
-        self.visible = False  # Cache l'ennemi mais garde sa position pour les particules
+        self.visible = False
