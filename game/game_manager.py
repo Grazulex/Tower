@@ -56,9 +56,11 @@ class GameManager:
     def next_wave(self):
         """
         Advances to the next wave and resets the wave completion status.
+        Les points sont conservés d'une vague à l'autre.
         """
         self.current_wave += 1
         self.wave_completed = False
+        # Les points sont conservés intentionnellement
 
     def get_current_wave(self):
         """
@@ -73,8 +75,11 @@ class GameManager:
         self.wave_completed = completed
 
     def reset_game(self):
-        """Reset the game state for a new game."""
-        self.points = STARTING_POINTS
+        """Reset the game state for a new game.
+        Cette fonction est appelée uniquement quand on démarre une nouvelle partie,
+        pas lors du passage d'une vague à l'autre.
+        """
+        self.points = STARTING_POINTS  # Points réinitialisés uniquement pour une nouvelle partie
         self.lives = STARTING_LIVES
         self.current_wave = 1
         self.enemies_killed = 0

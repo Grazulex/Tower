@@ -1,6 +1,8 @@
+import pygame
 from enteties.enemy_base import Enemy
 from config.color import *
 from config.constants import NORMAL_ENEMY_HEALTH, NORMAL_ENEMY_POINTS
+
 
 class EnemyNormal(Enemy):
     """
@@ -30,3 +32,11 @@ class EnemyNormal(Enemy):
         self.text_color = WHITE
         self.health = NORMAL_ENEMY_HEALTH
         self.points_value = NORMAL_ENEMY_POINTS
+        # Charger le son de mort
+        self.death_sound = pygame.mixer.Sound('assets/sounds/crystal_bubble_medium.wav')
+
+    def play_death_sound(self):
+        """
+        Joue le son de mort de l'ennemi normal.
+        """
+        self.death_sound.play()

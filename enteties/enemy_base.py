@@ -90,7 +90,25 @@ class Enemy:
         Displays the enemy's health and handles particle effects when the enemy is removed.
         """
         if self.visible:
-            pygame.draw.circle(self.screen, self.color, (int(self.x), int(self.y)), self.radius)
+            # Calculer la couleur en fonction de la santé
+            health_ratio = max(0, min(1, self.health / 100))
+            # Transition de la couleur de base vers le rouge quand la santé diminue
+            base_color = self.color
+            damaged_color = ENEMY_DAMAGED_COLOR  # Couleur pour les ennemis endommagés
+            current_color = (
+                int(base_color[0] * health_ratio + damaged_color[0] * (1 - health_ratio)),
+                int(base_color[1] * health_ratio + damaged_color[1] * (1 - health_ratio)),
+                int(base_color[2] * health_ratio + damaged_color[2] * (1 - health_ratio))
+            )
+            
+            # Dessiner le cercle avec un dégradé radial simple
+            for r in range(int(self.radius), 0, -1):
+                alpha = int(255 * (r / self.radius))
+                s = pygame.Surface((r * 2, r * 2), pygame.SRCALPHA)
+                pygame.draw.circle(s, (*current_color, alpha), (r, r), r)
+                self.screen.blit(s, (int(self.x - r), int(self.y - r)))
+            
+            # Afficher la santé
             text = self.font.render(str(self.health), True, self.text_color)
             text_rect = text.get_rect(center=(int(self.x), int(self.y)))
             self.screen.blit(text, text_rect)
@@ -127,12 +145,20 @@ class Enemy:
         if self.health <= 0:
             self.remove()
 
+    def play_death_sound(self):
+        """
+        Méthode à surcharger dans les classes filles pour jouer le son de mort spécifique.
+        """
+        pass
+
     def remove(self):
         """
         Removes the enemy from the game.
 
-        Triggers particle effects and updates the game manager with points and enemy kill count.
+        Triggers particle effects, plays death sound, and updates the game manager with points and enemy kill count.
         """
+        self.play_death_sound()
+
         for i in range(8):
             particle = Particle(self.x, self.y, RED)
             self.particles.append(particle)

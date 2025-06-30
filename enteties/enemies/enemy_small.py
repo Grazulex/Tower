@@ -1,8 +1,10 @@
+import pygame
 from enteties.enemy_base import Enemy
 from config.constants import (ENEMY_RADIUS, ENEMY_SPEED,
                             SMALL_ENEMY_RADIUS_MULTIPLIER, SMALL_ENEMY_HEALTH,
                             SMALL_ENEMY_SPEED_MULTIPLIER, SMALL_ENEMY_POINTS)
 from config.color import *
+
 
 class EnemySmall(Enemy):
     """
@@ -37,3 +39,11 @@ class EnemySmall(Enemy):
         self.health = SMALL_ENEMY_HEALTH
         self.speed = ENEMY_SPEED * SMALL_ENEMY_SPEED_MULTIPLIER
         self.points_value = SMALL_ENEMY_POINTS
+        # Charger le son de mort
+        self.death_sound = pygame.mixer.Sound('assets/sounds/crystal_bubble_small.wav')
+
+    def play_death_sound(self):
+        """
+        Joue le son de mort de l'ennemi petit.
+        """
+        self.death_sound.play()

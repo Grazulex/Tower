@@ -1,5 +1,6 @@
 import pygame
 import random
+from config.constants import *
 
 class Particle:
     """
@@ -27,11 +28,17 @@ class Particle:
         """
         self.x = x
         self.y = y
-        self.color = color
-        self.radius = random.randint(2, 3)
-        self.lifetime = 30
-        self.dx = random.uniform(-2, 2)
-        self.dy = random.uniform(-2, 2)
+        # Créer une variation de couleur plus douce
+        color_variation = random.randint(-PARTICLE_COLOR_VARIATION, PARTICLE_COLOR_VARIATION)
+        self.color = (
+            max(0, min(255, color[0] + color_variation)),
+            max(0, min(255, color[1] + color_variation)),
+            max(0, min(255, color[2] + color_variation))
+        )
+        self.radius = random.randint(PARTICLE_SIZE_MIN, PARTICLE_SIZE_MAX)
+        self.lifetime = random.randint(PARTICLE_LIFETIME_MIN, PARTICLE_LIFETIME_MAX)
+        self.dx = random.uniform(-PARTICLE_SPEED, PARTICLE_SPEED)
+        self.dy = random.uniform(-PARTICLE_SPEED, PARTICLE_SPEED)
         self.alpha = 255  # Opacity of the particle
 
     def update(self):

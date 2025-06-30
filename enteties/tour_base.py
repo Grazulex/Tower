@@ -25,6 +25,12 @@ class Tour:
         current_target (Enemy): The current enemy being targeted by the tower.
     """
 
+    def play_attack_sound(self):
+        """
+        Méthode à surcharger dans les classes filles pour jouer le son d'attaque spécifique.
+        """
+        pass
+
     def __init__(self, screen, column, row):
         """
         Initializes a Tour instance.
@@ -60,8 +66,21 @@ class Tour:
             enemies (list): A list of Enemy objects currently in the game.
             game_manager (GameManager): The game manager handling game state.
         """
-        pygame.draw.rect(self.screen, self.color,
-                         (self.cell_size * self.column, self.cell_size * self.row, self.cell_size, self.cell_size))
+        # Créer un dégradé du haut vers le bas
+        for i in range(self.cell_size):
+            progress = i / self.cell_size
+            # Assombrir légèrement la couleur pour le bas de la tour
+            gradient_color = (
+                max(0, self.color[0] - int(TOWER_GRADIENT_INTENSITY * progress)),
+                max(0, self.color[1] - int(TOWER_GRADIENT_INTENSITY * progress)),
+                max(0, self.color[2] - int(TOWER_GRADIENT_INTENSITY * progress))
+            )
+            pygame.draw.line(
+                self.screen,
+                gradient_color,
+                (self.cell_size * self.column, self.cell_size * self.row + i),
+                (self.cell_size * (self.column + 1), self.cell_size * self.row + i)
+            )
 
         text = self.font.render(str(self.damage), True, self.text_color)
         text_rect = text.get_rect(center=(int(self.cell_size * self.column)+(self.cell_size//2), int(self.cell_size * self.row)+(self.cell_size//2)))
@@ -69,7 +88,31 @@ class Tour:
 
         center_x = self.cell_size * self.column + self.cell_size // 2
         center_y = self.cell_size * self.row + self.cell_size // 2
-        pygame.draw.circle(self.screen, GRAY, (center_x, center_y), self.attack_range, 1)
+        
+        # Créer une surface avec canal alpha pour le périmètre de tir
+        range_surface = pygame.Surface((self.attack_range * 2, self.attack_range * 2), pygame.SRCALPHA)
+        
+        # Dessiner plusieurs cercles concentriques avec différentes transparences
+        for r in range(self.attack_range, self.attack_range - RANGE_CIRCLES_COUNT, -1):
+            # Calculer l'alpha en fonction de la position du cercle
+            progress = (r - (self.attack_range - RANGE_CIRCLES_COUNT)) / RANGE_CIRCLES_COUNT
+            alpha = int(RANGE_MIN_ALPHA + (RANGE_MAX_ALPHA - RANGE_MIN_ALPHA) * progress)
+            
+            # Utiliser une couleur légèrement teintée selon la couleur de la tour
+            range_color = (
+                min(255, self.color[0] + RANGE_COLOR_INTENSITY),
+                min(255, self.color[1] + RANGE_COLOR_INTENSITY),
+                min(255, self.color[2] + RANGE_COLOR_INTENSITY),
+                alpha
+            )
+            pygame.draw.circle(range_surface, range_color, (self.attack_range, self.attack_range), r, 1)
+        
+        # Ajouter un effet de brillance très subtil
+        glow_color = (255, 255, 255, RANGE_GLOW_ALPHA)
+        pygame.draw.circle(range_surface, glow_color, (self.attack_range, self.attack_range), self.attack_range - 1, 1)
+        
+        # Afficher la surface du périmètre
+        self.screen.blit(range_surface, (center_x - self.attack_range, center_y - self.attack_range))
         if enemies:
             enemies_in_range = []
             for enemy in enemies:
@@ -86,6 +129,7 @@ class Tour:
                     target = min(enemies_in_range, key=lambda e: e.health)
                     self.attack(target)
                     self.last_attack_time = current_time
+                    self.play_attack_sound()
 
                     self.is_attacking = True
                     self.current_target = target

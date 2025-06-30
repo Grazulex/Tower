@@ -57,3 +57,26 @@ BIG_ENEMY_RADIUS_MULTIPLIER = 1.2  # Size multiplier for big enemies
 BIG_ENEMY_HEALTH = 300  # Health points of big enemies
 BIG_ENEMY_SPEED_MULTIPLIER = 0.4  # Speed multiplier for big enemies
 BIG_ENEMY_POINTS = 50  # Points awarded for defeating big enemies
+
+# Visual Effects Settings
+# Tower range visualization
+RANGE_CIRCLES_COUNT = 3  # Number of concentric circles for range display
+RANGE_MAX_ALPHA = 40  # Maximum transparency for range circles (0-255)
+RANGE_MIN_ALPHA = 15  # Minimum transparency for range circles (0-255)
+RANGE_COLOR_INTENSITY = 30  # How much to lighten the tower's color for range display
+RANGE_GLOW_ALPHA = 15  # Transparency for the glow effect
+
+# Tower gradient effect
+TOWER_GRADIENT_INTENSITY = 40  # How much to darken the tower's color for gradient
+
+# Enemy health visualization
+ENEMY_DAMAGED_COLOR = (255, 100, 100)  # Color for damaged enemies
+ENEMY_HEALTH_GRADIENT_STEPS = 10  # Number of steps in the health gradient
+
+# Particle effects
+PARTICLE_COLOR_VARIATION = 20  # Maximum color variation for particles
+PARTICLE_SIZE_MIN = 2  # Minimum particle size
+PARTICLE_SIZE_MAX = 4  # Maximum particle size
+PARTICLE_LIFETIME_MIN = 25  # Minimum particle lifetime
+PARTICLE_LIFETIME_MAX = 35  # Maximum particle lifetime
+PARTICLE_SPEED = 1.5  # Base particle movement speed

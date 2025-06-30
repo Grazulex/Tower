@@ -1,3 +1,4 @@
+import pygame
 from enteties.tour_base import Tour
 from config.color import *
 from config.constants import (SLOW_TOWER_RANGE, SLOW_TOWER_ATTACK_SPEED,
@@ -33,3 +34,10 @@ class TourSlow(Tour):
         self.attack_speed = SLOW_TOWER_ATTACK_SPEED
         self.damage = SLOW_TOWER_DAMAGE
         self.cost = SLOW_TOWER_COST
+        # Ne charger le son que si l'écran est défini (pas lors de l'initialisation des types)
+        if screen is not None:
+            self.attack_sound = pygame.mixer.Sound('assets/sounds/crystal_laser_long.wav')
+
+    def play_attack_sound(self):
+        if hasattr(self, 'attack_sound'):
+            self.attack_sound.play()
