@@ -127,11 +127,6 @@ class Enemy:
             self.screen.blit(border_surface, 
                             (int(self.x - self.radius * 1.1), 
                              int(self.y - self.radius * 1.1)))
-            
-            # Afficher la santé
-            #text = self.font.render(str(self.health), True, self.text_color)
-            #text_rect = text.get_rect(center=(int(self.x), int(self.y)))
-            #self.screen.blit(text, text_rect)
 
         particles_alive = False
         for particle in self.particles[:]:
