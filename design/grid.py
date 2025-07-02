@@ -1,4 +1,8 @@
+from typing import List
 import pygame
+from pygame.surface import Surface
+from game.game_manager import GameManager
+from enteties.enemy_base import EnemyBase
 from config.color import *
 from config.constants import *
 from enteties.tours.tour_normal import TourNormal
@@ -17,7 +21,7 @@ class Grid:
         towers (dict): A dictionary mapping grid positions to tower instances.
     """
 
-    def __init__(self, screen):
+    def __init__(self, screen: Surface):
         """
         Initializes the Grid instance.
 
@@ -36,7 +40,7 @@ class Grid:
             for column in range(0, (BOARD_WIDTH // self.cell_size)):
                 self.grid[-1].append(0)
 
-    def add_tower(self, row, column, tower_type):
+    def add_tower(self, row: int, column: int, tower_type: int) -> None:
         """
         Adds a tower to the grid.
 
@@ -57,7 +61,7 @@ class Grid:
         self.towers[(row, column)] = tower
         self.grid[row][column] = tower_type
 
-    def remove_tower(self, row, column):
+    def remove_tower(self, row: int, column: int) -> None:
         """
         Removes a tower from the grid.
 
@@ -69,7 +73,7 @@ class Grid:
             del self.towers[(row, column)]
             self.grid[row][column] = 0
 
-    def draw(self, enemies, game_manager):
+    def draw(self, enemies: List[EnemyBase], game_manager: GameManager) -> None:
         """
         Draws the grid and towers on the screen.
 
@@ -90,7 +94,7 @@ class Grid:
         for tower in self.towers.values():
             tower.draw(enemies, game_manager)
 
-    def get_grid(self):
+    def get_grid(self) -> List[List[int]]:
         """
         Gets the current state of the grid.
 

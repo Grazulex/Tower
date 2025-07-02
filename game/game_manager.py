@@ -1,3 +1,4 @@
+from typing import Type, Any
 from config.constants import STARTING_POINTS, STARTING_LIVES
 
 class GameManager:
@@ -27,7 +28,7 @@ class GameManager:
         self.lives = STARTING_LIVES
         self.game_over = False
 
-    def lose_life(self):
+    def lose_life(self) -> None:
         """
         Decreases the player's lives by one. Ends the game if lives reach zero.
         """
@@ -35,7 +36,7 @@ class GameManager:
         if self.lives <= 0:
             self.game_over = True
 
-    def get_lives(self):
+    def get_lives(self) -> int:
         """
         Retrieves the number of lives remaining.
 
@@ -44,7 +45,7 @@ class GameManager:
         """
         return self.lives
 
-    def is_game_over(self):
+    def is_game_over(self) -> bool:
         """
         Checks if the game is over.
 
@@ -53,16 +54,16 @@ class GameManager:
         """
         return self.game_over
 
-    def next_wave(self):
+    def next_wave(self) -> None:
         """
         Advances to the next wave and resets the wave completion status.
-        Les points sont conservés d'une vague à l'autre.
+        Points are intentionally carried over between waves.
         """
         self.current_wave += 1
         self.wave_completed = False
-        # Les points sont conservés intentionnellement
+        # Points are intentionally preserved
 
-    def get_current_wave(self):
+    def get_current_wave(self) -> int:
         """
         Retrieves the current wave number.
 
@@ -71,22 +72,22 @@ class GameManager:
         """
         return self.current_wave
 
-    def set_wave_completed(self, completed):
+    def set_wave_completed(self, completed: bool) -> None:
         self.wave_completed = completed
 
-    def reset_game(self):
+    def reset_game(self) -> None:
         """Reset the game state for a new game.
-        Cette fonction est appelée uniquement quand on démarre une nouvelle partie,
-        pas lors du passage d'une vague à l'autre.
+        This function is called only when a new game is started,
+        not when transitioning between waves.
         """
-        self.points = STARTING_POINTS  # Points réinitialisés uniquement pour une nouvelle partie
+        self.points = STARTING_POINTS  # Points are reset only for a new game
         self.lives = STARTING_LIVES
         self.current_wave = 1
         self.enemies_killed = 0
         self.wave_completed = False
         self.game_over = False
 
-    def is_wave_completed(self):
+    def is_wave_completed(self) -> bool:
         """
         Checks if the current wave is completed.
 
@@ -95,7 +96,7 @@ class GameManager:
         """
         return self.wave_completed
 
-    def add_points(self, amount):
+    def add_points(self, amount: int) -> None:
         """
         Adds points to the player's total.
 
@@ -104,7 +105,7 @@ class GameManager:
         """
         self.points += amount
 
-    def can_afford_tower(self, tower_class):
+    def can_afford_tower(self, tower_class: Type[Any]) -> bool:
         """
         Checks if the player can afford a tower of the specified class.
 
@@ -117,7 +118,7 @@ class GameManager:
         dummy_tower = tower_class(None, 0, 0)
         return self.points >= dummy_tower.cost
 
-    def buy_tower(self, tower_class):
+    def buy_tower(self, tower_class: Type[Any]) -> bool:
         """
         Attempts to purchase a tower of the specified class.
 
@@ -133,7 +134,7 @@ class GameManager:
             return True
         return False
 
-    def get_points(self):
+    def get_points(self) -> int:
         """
         Retrieves the player's current points.
 
@@ -142,13 +143,13 @@ class GameManager:
         """
         return self.points
 
-    def enemy_killed(self):
+    def enemy_killed(self) -> None:
         """
         Increments the count of enemies killed by the player.
         """
         self.enemies_killed += 1
 
-    def get_enemies_killed(self):
+    def get_enemies_killed(self) -> int:
         """
         Retrieves the total number of enemies killed.
 

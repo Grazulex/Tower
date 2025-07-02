@@ -1,9 +1,12 @@
+from typing import List, Tuple
 import pygame
+from pygame.surface import Surface
+from game.game_manager import GameManager
 from config.constants import *
 from config.color import *
 from effects.particle import Particle
 
-class Enemy:
+class EnemyBase:
     """
     Represents an enemy in the game.
 
@@ -26,7 +29,7 @@ class Enemy:
         reached_end (bool): Whether the enemy has reached the end of the track.
     """
 
-    def __init__(self, screen, track_points, game_manager):
+    def __init__(self, screen: Surface, track_points: List[Tuple[int, int]], game_manager: GameManager):
         """
         Initializes an Enemy instance.
 
@@ -56,7 +59,7 @@ class Enemy:
 
         self.reached_end = False
 
-    def move(self):
+    def move(self) -> None:
         """
         Moves the enemy along the track.
 
@@ -74,7 +77,7 @@ class Enemy:
         dy = target_y - self.y
         distance = (dx ** 2 + dy ** 2) ** 0.5
 
-        if distance < self.speed:
+        if distance < float(self.speed):
             self.current_point_index += 1
             if self.current_point_index >= len(self.track_points):
                 self.reached_end = True
@@ -83,43 +86,42 @@ class Enemy:
             self.x += (dx / distance) * self.speed
             self.y += (dy / distance) * self.speed
 
-    def draw(self):
+    def draw(self) -> None:
         """
         Draws the enemy and its particles on the screen.
 
         Displays the enemy's health and handles particle effects when the enemy is removed.
         """
         if self.visible:
-            # Calculer la couleur en fonction de la santé
-            health_ratio = max(0, min(1, self.health / 100))
-            # Transition de la couleur de base vers le rouge quand la santé diminue
+        # Calculate color based on health
+            health_ratio = max(0.0, min(1.0, float(self.health) / 100.0))
+            # Transition from base color to red as health decreases
             base_color = self.color
-            damaged_color = ENEMY_DAMAGED_COLOR  # Couleur pour les ennemis endommagés
+            damaged_color = ENEMY_DAMAGED_COLOR  # Color for damaged enemies
             current_color = (
                 int(base_color[0] * health_ratio + damaged_color[0] * (1 - health_ratio)),
                 int(base_color[1] * health_ratio + damaged_color[1] * (1 - health_ratio)),
                 int(base_color[2] * health_ratio + damaged_color[2] * (1 - health_ratio))
             )
             
-            # Effet de lueur néon
+            # Neon glow effect
             glow_radius = int(self.radius * 1.5)
-            glow_color = (*current_color, 30)  # Faible alpha pour la lueur externe
             
-            # Créer plusieurs cercles pour l'effet de lueur
-            for r in range(glow_radius, int(self.radius), -1):
+            # Create multiple circles for glow effect
+            for r in range(int(glow_radius), int(self.radius), -1):
                 alpha = int(30 * (r / glow_radius))
                 s = pygame.Surface((r * 2, r * 2), pygame.SRCALPHA)
                 pygame.draw.circle(s, (*current_color, alpha), (r, r), r)
                 self.screen.blit(s, (int(self.x - r), int(self.y - r)))
             
-            # Corps principal de l'ennemi avec effet néon
+            # Main enemy body with neon effect
             for r in range(int(self.radius), 0, -1):
                 alpha = int(255 * (r / self.radius))
                 s = pygame.Surface((r * 2, r * 2), pygame.SRCALPHA)
                 pygame.draw.circle(s, (*current_color, alpha), (r, r), r)
                 self.screen.blit(s, (int(self.x - r), int(self.y - r)))
             
-            # Ajout d'un contour brillant
+            # Add glowing border
             border_surface = pygame.Surface((int(self.radius * 2.2), int(self.radius * 2.2)), pygame.SRCALPHA)
             pygame.draw.circle(border_surface, (*current_color, 160), 
                              (int(self.radius * 1.1), int(self.radius * 1.1)), 
@@ -140,7 +142,7 @@ class Enemy:
         if not particles_alive and not self.visible:
             self.x = -100
 
-    def is_active(self):
+    def is_active(self) -> bool:
         """
         Checks if the enemy is active.
 
@@ -149,7 +151,7 @@ class Enemy:
         """
         return not self.reached_end and self.health > 0
 
-    def take_damage(self, damage):
+    def take_damage(self, damage: int) -> None:
         """
         Reduces the enemy's health by the specified damage amount.
 
@@ -160,13 +162,13 @@ class Enemy:
         if self.health <= 0:
             self.remove()
 
-    def play_death_sound(self):
+    def play_death_sound(self) -> None:
         """
-        Méthode à surcharger dans les classes filles pour jouer le son de mort spécifique.
+        Method to be overridden in child classes to play specific death sound.
         """
         pass
 
-    def remove(self):
+    def remove(self) -> None:
         """
         Removes the enemy from the game.
 

@@ -1,5 +1,8 @@
+from typing import List
 import pygame
-from enteties.enemy_base import Enemy
+from pygame.surface import Surface
+from game.game_manager import GameManager
+from enteties.enemy_base import EnemyBase
 from config.constants import (ENEMY_RADIUS, ENEMY_SPEED,
                             BIG_ENEMY_RADIUS_MULTIPLIER, BIG_ENEMY_HEALTH,
                             BIG_ENEMY_SPEED_MULTIPLIER, BIG_ENEMY_POINTS)
@@ -7,7 +10,7 @@ from config.color import *
 from os.path import join
 
 
-class EnemyBig(Enemy):
+class EnemyBig(EnemyBase):
     """
     Represents a larger and slower enemy in the game.
 
@@ -23,7 +26,7 @@ class EnemyBig(Enemy):
         points_value (int): The points awarded for defeating the enemy.
     """
 
-    def __init__(self, screen, track_points, game_manager):
+    def __init__(self, screen: Surface, track_points: List[tuple[int, int]], game_manager: GameManager):
         """
         Initializes an EnemyBig instance.
 
@@ -32,17 +35,17 @@ class EnemyBig(Enemy):
             track_points (list): The points defining the track for enemy movement.
             game_manager (GameManager, optional): The game manager handling game state.
         """
-        Enemy.__init__(self, screen, track_points, game_manager)
+        super().__init__(screen, track_points, game_manager)
         self.color = YELLOW
         self.radius = ENEMY_RADIUS * BIG_ENEMY_RADIUS_MULTIPLIER
         self.health = BIG_ENEMY_HEALTH
         self.speed = ENEMY_SPEED * BIG_ENEMY_SPEED_MULTIPLIER
         self.points_value = BIG_ENEMY_POINTS
-        # Charger le son de mort
+        # Load death sound
         self.death_sound = pygame.mixer.Sound(join('assets','sounds','crystal_bubble_large.wav'))
 
-    def play_death_sound(self):
+    def play_death_sound(self) -> None:
         """
-        Joue le son de mort de l'ennemi grand.
+        Plays the big enemy death sound.
         """
         self.death_sound.play()

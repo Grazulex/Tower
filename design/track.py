@@ -1,4 +1,6 @@
+from typing import List, Tuple
 import pygame
+from pygame.surface import Surface
 from config.color import *
 from config.constants import *
 
@@ -13,7 +15,7 @@ class Track:
         track (list): A list of tuples representing the track points (row, column).
     """
 
-    def __init__(self, screen):
+    def __init__(self, screen: Surface):
         """
         Initializes the Track instance.
 
@@ -25,7 +27,7 @@ class Track:
         self.track_color = YELLOW
         self.track = []
 
-    def generate_random_track(self):
+    def generate_random_track(self) -> None:
         """
         Generates a random track for enemy movement.
 
@@ -58,7 +60,7 @@ class Track:
             self.track.append((row, col))
             visited.add((row, col))
 
-    def draw(self):
+    def draw(self) -> None:
         """
         Draws the track on the game screen.
 
@@ -68,7 +70,7 @@ class Track:
             points = [(col * CELL_SIZE + CELL_SIZE // 2, row * CELL_SIZE + CELL_SIZE // 2) for row, col in self.track]
             pygame.draw.lines(self.screen, self.track_color, False, points, self.line_width)
 
-    def get_track(self):
+    def get_track(self) -> List[Tuple[int, int]]:
         """
         Gets the current track.
 

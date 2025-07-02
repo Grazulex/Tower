@@ -1,11 +1,14 @@
+from typing import List
 import pygame
-from enteties.enemy_base import Enemy
+from pygame.surface import Surface
+from game.game_manager import GameManager
+from enteties.enemy_base import EnemyBase
 from config.color import *
 from config.constants import NORMAL_ENEMY_HEALTH, NORMAL_ENEMY_POINTS
 from os.path import join
 
 
-class EnemyNormal(Enemy):
+class EnemyNormal(EnemyBase):
     """
     Represents a normal enemy in the game.
 
@@ -19,7 +22,7 @@ class EnemyNormal(Enemy):
         points_value (int): The points awarded for defeating the enemy.
     """
 
-    def __init__(self, screen, track_points, game_manager):
+    def __init__(self, screen: Surface, track_points: List[tuple[int, int]], game_manager: GameManager):
         """
         Initializes an EnemyNormal instance.
 
@@ -28,16 +31,16 @@ class EnemyNormal(Enemy):
             track_points (list): The points defining the track for enemy movement.
             game_manager (GameManager, optional): The game manager handling game state.
         """
-        Enemy.__init__(self, screen, track_points, game_manager)
+        super().__init__(screen, track_points, game_manager)
         self.color = BLUE
         self.text_color = WHITE
         self.health = NORMAL_ENEMY_HEALTH
         self.points_value = NORMAL_ENEMY_POINTS
-        # Charger le son de mort
+        # Load death sound
         self.death_sound = pygame.mixer.Sound(join('assets','sounds','crystal_bubble_medium.wav'))
 
-    def play_death_sound(self):
+    def play_death_sound(self) -> None:
         """
-        Joue le son de mort de l'ennemi normal.
+        Plays the normal enemy death sound.
         """
         self.death_sound.play()

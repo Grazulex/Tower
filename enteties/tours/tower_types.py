@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Type
+from typing import Type, List, Tuple, Any
 from .tour_normal import TourNormal
 from .tour_power import TourPower
 from .tour_slow import TourSlow
@@ -21,7 +21,7 @@ class TowerType(Enum):
     SLOW = (TourSlow, 3)
 
     @property
-    def tower_class(self) -> Type:
+    def tower_class(self) -> Type[Any]:
         """
         Returns the class associated with the tower type.
 
@@ -49,7 +49,7 @@ class TowerType(Enum):
         """
         return self.tower_class(None, 0, 0).cost
 
-    def get_color(self):
+    def get_color(self) -> Tuple[int, int, int]:
         """
         Retrieves the color of the tower type.
 
@@ -59,7 +59,7 @@ class TowerType(Enum):
         return self.tower_class(None, 0, 0).color
 
     @classmethod
-    def get_all_towers(cls):
+    def get_all_towers(cls) -> List['TowerType']:
         """
         Retrieves all tower types defined in the enum.
 

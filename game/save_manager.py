@@ -1,30 +1,31 @@
 """
 save_manager.py
 
-Ce module gère la sauvegarde et le chargement des données du jeu.
+This module handles saving and loading game data.
 """
+from typing import Dict
 import json
 import os
 
 SAVE_FILE = "save_data.json"
 
-def save_high_score(score):
+def save_high_score(score: int) -> None:
     """
-    Sauvegarde le high score dans un fichier.
+    Saves the high score to a file.
     
     Args:
-        score (int): Le score à sauvegarder
+        score (int): The score to save
     """
-    data = {'high_score': score}
+    data: Dict[str, int] = {'high_score': score}
     with open(SAVE_FILE, 'w') as f:
         json.dump(data, f)
 
-def load_high_score():
+def load_high_score() -> int:
     """
-    Charge le high score depuis le fichier.
+    Loads the high score from the file.
     
     Returns:
-        int: Le high score chargé, 0 si aucun fichier n'existe
+        int: The loaded high score, 0 if no file exists
     """
     try:
         if os.path.exists(SAVE_FILE):

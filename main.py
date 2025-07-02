@@ -23,6 +23,7 @@ Functions:
 import pygame
 import random
 from sys import exit
+from typing import List, Tuple
 from config.constants import *
 from config.color import *
 import design.grid as grid_module
@@ -32,12 +33,13 @@ from ui.game_ui import GameUI
 from game.game_manager import GameManager
 from game.game_state import GameState
 from os.path import join
+from pygame.surface import Surface
 
 # Calculate grid dimensions
 GRID_WIDTH = BOARD_WIDTH // CELL_SIZE
 GRID_HEIGHT = BOARD_HEIGHT // CELL_SIZE
 
-def create_enemy_wave(screen, track_data, game_manager, is_new_wave=False):
+def create_enemy_wave(screen: Surface, track_data: List[Tuple[int, int]], game_manager: GameManager, is_new_wave: bool = False) -> EnemyWave:
     """
     Creates a new enemy wave with appropriate parameters based on the game state.
     
@@ -68,7 +70,7 @@ def create_enemy_wave(screen, track_data, game_manager, is_new_wave=False):
         game_manager=game_manager
     )
 
-def run():
+def run() -> None:
     """
     Initializes and runs the main game loop.
 
@@ -78,23 +80,21 @@ def run():
     The game loop continues until the user quits or the game ends.
     """
     pygame.init()
-    pygame.mixer.init()  # Initialiser le système audio
+    pygame.mixer.init()
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))  # Create the game window
     
-    # Charger les sons
+    # Load sounds
     wave_complete_sound = pygame.mixer.Sound(join('assets','musics','win_zen_crystal_melody.wav'))
     menu_music = pygame.mixer.Sound(join('assets','musics','zen_menu_loop.wav'))
     game_over_music = pygame.mixer.Sound(join('assets','musics','zen_death_melody.wav'))
     
-    # Démarrer la musique du menu en boucle
-    menu_channel = pygame.mixer.Channel(0)  # Utiliser le canal 0 pour la musique du menu
-    menu_channel.play(menu_music, loops=-1)  # -1 signifie boucle infinie
+    menu_channel = pygame.mixer.Channel(0)
+    menu_channel.play(menu_music, loops=-1)
     pygame.display.set_caption(TITLE)  # Set the window title
     clock = pygame.time.Clock()  # Initialize the game clock
 
     # Initialize game state
     game_state = GameState()
-    play_menu_music = True  # Variable pour contrôler quand jouer la musique du menu
 
     # Initialize game components
     grid = grid_module.Grid(screen)
@@ -128,11 +128,10 @@ def run():
                 pygame.quit()
                 exit()
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                game_state.set_state(GameState.PLAYING)
-                # Arrêter la musique du menu et désactiver la lecture pour la prochaine partie
+                game_state.set_state("playing")
+    # Stop menu music
                 menu_channel.stop()
-                play_menu_music = False
-                # Réinitialiser le GameManager et les composants
+                # Reset the GameManager
                 game_manager.reset_game()
                 grid = grid_module.Grid(screen)
                 grid_data = grid.get_grid()
@@ -152,15 +151,14 @@ def run():
                 pos = pygame.mouse.get_pos()
 
                 # Handle UI button clicks
-                game_ui.handle_click(pos, game_manager.get_points())
+                game_ui.handle_click(pos)
 
                 # Handle tower placement
                 if not any(button[0].collidepoint(pos) for button in game_ui.tower_buttons) and game_ui.get_selected_tower() is not None:
                     column = pos[0] // CELL_SIZE
                     row = pos[1] // CELL_SIZE
 
-                    # Vérifier que les coordonnées sont dans les limites de la grille
-                    if (0 <= row < GRID_HEIGHT and 0 <= column < GRID_WIDTH):
+                    if 0 <= row < GRID_HEIGHT and 0 <= column < GRID_WIDTH:
                         # Check if the cell is valid for tower placement
                         if (row, column) not in track_data and grid_data[row][column] == 0:
                             tower_type = game_ui.get_selected_tower()
@@ -185,9 +183,8 @@ def run():
             # Update high score
             if game_state.update_high_score(game_manager.get_points()):
                 print('New high score!')
-            game_state.set_state(GameState.GAME_OVER)
-            play_menu_music = True  # Réactiver la musique du menu pour le prochain retour au menu
-            # Jouer la musique de game over
+            game_state.set_state("game_over")
+            # Play game over music
             game_over_music.play()
 
             # Game over screen loop
@@ -209,14 +206,11 @@ def run():
                         exit()
                     elif event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_RETURN:
-                            # Arrêter toutes les musiques
+                            # Stop all music
                             game_over_music.stop()
                             menu_channel.stop()
-                            # Redémarrer le jeu directement
-                            game_state.set_state(GameState.PLAYING)
+                            game_state.set_state("playing")
                             game_manager.reset_game()
-                            # Réinitialiser les composants du jeu
-                            # Créer une nouvelle vague d'ennemis avec le game_manager réinitialisé
                             # Reset game components
                             grid = grid_module.Grid(screen)
                             grid_data = grid.get_grid()
@@ -235,9 +229,9 @@ def run():
         # Handle wave completion
         if enemy_wave.is_wave_complete():
             game_manager.set_wave_completed(True)
-            # Jouer la musique de fin de vague
+            # Play wave complete sound
             wave_complete_sound.play()
-            pygame.time.wait(3000)  # Attendre un peu plus longtemps pour la musique
+            pygame.time.wait(3000)  # Wait longer for the music to play
 
             # Reset grid and track for the next wave
             grid = grid_module.Grid(screen)

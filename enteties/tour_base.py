@@ -1,8 +1,12 @@
+from typing import List
 import pygame
+from pygame.surface import Surface
+from game.game_manager import GameManager
+from enteties.enemy_base import EnemyBase
 from config.constants import *
 from config.color import *
 
-class Tour:
+class TourBase:
     """
     Represents a defensive tower in the game.
 
@@ -27,11 +31,11 @@ class Tour:
 
     def play_attack_sound(self):
         """
-        Méthode à surcharger dans les classes filles pour jouer le son d'attaque spécifique.
+        Method to be overridden in child classes to play specific attack sound.
         """
         pass
 
-    def __init__(self, screen, column, row):
+    def __init__(self, screen: Surface, column: int, row: int):
         """
         Initializes a Tour instance.
 
@@ -58,7 +62,7 @@ class Tour:
         self.attack_animation_duration = ATTACK_DURATION
         self.current_target = None
 
-    def draw(self, enemies, game_manager):
+    def draw(self, enemies: List[EnemyBase], game_manager: GameManager) -> None:
         """
         Draws the tower on the screen and handles its attack logic.
 
@@ -66,22 +70,22 @@ class Tour:
             enemies (list): A list of Enemy objects currently in the game.
             game_manager (GameManager): The game manager handling game state.
         """
-        # Coordonnées de base de la tour
+        # Base coordinates of the tower
         x = self.cell_size * self.column
         y = self.cell_size * self.row
         size = self.cell_size
-        padding = 2  # Espace pour le contour brillant
+        padding = 2  # Space for the glowing border
 
-        # Créer une surface pour la tour avec canal alpha
+        # Create a surface for the tower with alpha channel
         tower_surface = pygame.Surface((size, size), pygame.SRCALPHA)
 
-        # Remplir avec la couleur de base (plus sombre)
+        # Fill in with the base color (darker)
         base_color = (max(0, self.color[0] - 30),
                      max(0, self.color[1] - 30),
                      max(0, self.color[2] - 30))
         pygame.draw.rect(tower_surface, base_color, (0, 0, size, size))
 
-        # Ajouter un motif de grille subtil
+        # Add a subtle grid pattern
         grid_color = (max(0, self.color[0] - 15),
                      max(0, self.color[1] - 15),
                      max(0, self.color[2] - 15))
@@ -89,47 +93,47 @@ class Tour:
             pygame.draw.line(tower_surface, grid_color, (i, 0), (i, size))
             pygame.draw.line(tower_surface, grid_color, (0, i), (size, i))
 
-        # Dessiner le carré principal avec un contour brillant
+        # Draw the main square with a glowing border
         inner_rect = pygame.Rect(padding, padding, size - 2*padding, size - 2*padding)
         pygame.draw.rect(tower_surface, self.color, inner_rect)
 
-        # Ajouter des reflets sur les bords
+        # Add highlights on the edges
         highlight_color = (min(255, self.color[0] + 50),
                          min(255, self.color[1] + 50),
                          min(255, self.color[2] + 50))
         pygame.draw.line(tower_surface, highlight_color, (padding, padding), (size-padding, padding), 2)
         pygame.draw.line(tower_surface, highlight_color, (padding, padding), (padding, size-padding), 2)
 
-        # Ajouter un contour extérieur plus foncé
+        # Add a darker outer border
         border_color = (max(0, self.color[0] - 50),
                        max(0, self.color[1] - 50),
                        max(0, self.color[2] - 50))
         pygame.draw.rect(tower_surface, border_color, (0, 0, size, size), 1)
 
-        # Ajouter un effet de brillance dans le coin supérieur gauche
+        # Add a shine effect in the top left corner
         glow_pos = (padding + 2, padding + 2)
         glow_color = (255, 255, 255, 128)
         glow_size = 3
         pygame.draw.circle(tower_surface, glow_color, glow_pos, glow_size)
 
-        # Dessiner la tour sur l'écran
+        # Draw the tower on the screen
         self.screen.blit(tower_surface, (x, y))
 
         center_x = self.cell_size * self.column + self.cell_size // 2
         center_y = self.cell_size * self.row + self.cell_size // 2
         
-        # N'afficher le périmètre de tir que pour les deux premières vagues
+        # Display shooting range only for the first two waves
         if game_manager and game_manager.get_current_wave() <= 2:
-            # Créer une surface avec canal alpha pour le périmètre de tir
+            # Create a surface with alpha channel for the shooting range
             range_surface = pygame.Surface((self.attack_range * 2, self.attack_range * 2), pygame.SRCALPHA)
             
-            # Dessiner plusieurs cercles concentriques avec différentes transparences
+            # Draw multiple concentric circles with varying transparency
             for r in range(self.attack_range, self.attack_range - RANGE_CIRCLES_COUNT, -1):
-                # Calculer l'alpha en fonction de la position du cercle
+                # Calculate alpha based on circle position
                 progress = (r - (self.attack_range - RANGE_CIRCLES_COUNT)) / RANGE_CIRCLES_COUNT
                 alpha = int(RANGE_MIN_ALPHA + (RANGE_MAX_ALPHA - RANGE_MIN_ALPHA) * progress)
                 
-                # Utiliser une couleur légèrement teintée selon la couleur de la tour
+                # Use a slightly tinted color based on the tower's color
                 range_color = (
                     min(255, self.color[0] + RANGE_COLOR_INTENSITY),
                     min(255, self.color[1] + RANGE_COLOR_INTENSITY),
@@ -138,11 +142,11 @@ class Tour:
                 )
                 pygame.draw.circle(range_surface, range_color, (self.attack_range, self.attack_range), r, 1)
             
-            # Ajouter un effet de brillance très subtil
+            # Add a very subtle glow effect
             glow_color = (255, 255, 255, RANGE_GLOW_ALPHA)
             pygame.draw.circle(range_surface, glow_color, (self.attack_range, self.attack_range), self.attack_range - 1, 1)
             
-            # Afficher la surface du périmètre
+            # Display the range surface
             self.screen.blit(range_surface, (center_x - self.attack_range, center_y - self.attack_range))
         if enemies:
             enemies_in_range = []
@@ -154,7 +158,7 @@ class Tour:
             if enemies_in_range:
                 current_time = pygame.time.get_ticks()
 
-                # Filtrer les ennemis valides (vivants et visibles)
+                # Filter valid enemies (alive and visible)
                 valid_enemies = [e for e in enemies_in_range if e.visible and e.health > 0]
                 
                 if valid_enemies:
@@ -162,7 +166,7 @@ class Tour:
                     time_since_last_attack = current_time - self.last_attack_time
                     if time_since_last_attack >= attack_delay:
                         target = min(valid_enemies, key=lambda e: e.health)
-                        # Vérifier une dernière fois que la cible est toujours valide
+                        # Final check that the target is still valid
                         if target.visible and target.health > 0:
                             self.attack(target)
                             self.last_attack_time = current_time
@@ -182,7 +186,7 @@ class Tour:
                     self.is_attacking = False
                     self.current_target = None
 
-    def attack(self, enemy):
+    def attack(self, enemy: EnemyBase) -> None:
         """
         Attacks the specified enemy, reducing its health.
 

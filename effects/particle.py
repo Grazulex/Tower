@@ -1,4 +1,6 @@
+from typing import Tuple
 import pygame
+from pygame.surface import Surface
 import random
 from config.constants import *
 
@@ -17,7 +19,7 @@ class Particle:
         alpha (int): The opacity of the particle (0-255).
     """
 
-    def __init__(self, x, y, color):
+    def __init__(self, x: float, y: float, color: Tuple[int, int, int]):
         """
         Initializes a Particle instance.
 
@@ -28,7 +30,7 @@ class Particle:
         """
         self.x = x
         self.y = y
-        # Créer une variation de couleur plus douce
+        # Create a smoother color variation
         color_variation = random.randint(-PARTICLE_COLOR_VARIATION, PARTICLE_COLOR_VARIATION)
         self.color = (
             max(0, min(255, color[0] + color_variation)),
@@ -41,7 +43,7 @@ class Particle:
         self.dy = random.uniform(-PARTICLE_SPEED, PARTICLE_SPEED)
         self.alpha = 255  # Opacity of the particle
 
-    def update(self):
+    def update(self) -> None:
         """
         Updates the particle's position, lifetime, and opacity.
 
@@ -53,7 +55,7 @@ class Particle:
         self.lifetime -= 1
         self.alpha = int((self.lifetime / 30) * 255)
 
-    def draw(self, screen):
+    def draw(self, screen: Surface) -> None:
         """
         Draws the particle on the screen with a neon effect.
 
@@ -61,26 +63,26 @@ class Particle:
             screen (pygame.Surface): The surface where the particle is drawn.
         """
         if self.lifetime > 0:
-            # S'assurer que l'alpha est dans la plage valide (0-255)
+            # Ensure alpha is in valid range (0-255)
             self.alpha = max(0, min(255, int(self.alpha)))
             
-            # Dessiner le corps principal de la particule
+            # Draw the main body of the particle
             particle_color = (max(0, min(255, int(self.color[0]))),
                             max(0, min(255, int(self.color[1]))),
                             max(0, min(255, int(self.color[2]))),
                             self.alpha)
             
-            # Créer une surface pour la particule
+            # Create surface for the particle
             size = max(1, int(self.radius * 2))
             particle_surface = pygame.Surface((size, size), pygame.SRCALPHA)
             
-            # Dessiner la particule
+            # Draw the particle
             pygame.draw.circle(particle_surface,
                              particle_color,
                              (size // 2, size // 2),
                              max(1, int(self.radius)))
             
-            # Ajouter un point brillant au centre
+            # Add a bright point at the center
             highlight_radius = max(1, int(self.radius * 0.5))
             highlight_color = (255, 255, 255, self.alpha // 2)
             pygame.draw.circle(particle_surface,
@@ -88,12 +90,12 @@ class Particle:
                              (size // 2, size // 2),
                              highlight_radius)
             
-            # Dessiner la particule sur l'écran
+            # Draw the particle on the screen
             screen.blit(particle_surface,
                        (int(self.x - size // 2),
                         int(self.y - size // 2)))
 
-    def is_alive(self):
+    def is_alive(self) -> bool:
         """
         Checks if the particle is still alive.
 

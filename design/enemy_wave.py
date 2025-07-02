@@ -1,5 +1,9 @@
+from typing import List, Tuple
 import pygame
 import random
+from pygame.surface import Surface
+from game.game_manager import GameManager
+from enteties.enemy_base import EnemyBase
 from enteties.enemies.enemy_normal import EnemyNormal
 from enteties.enemies.enemy_big import EnemyBig
 from enteties.enemies.enemy_small import EnemySmall
@@ -20,7 +24,7 @@ class EnemyWave:
         last_spawn_time (int): The time (in milliseconds) when the last enemy was spawned.
     """
 
-    def __init__(self, screen, track_points, num_enemies, spawn_delay, game_manager):
+    def __init__(self, screen: Surface, track_points: List[Tuple[int, int]], num_enemies: int, spawn_delay: int, game_manager: GameManager):
         """
         Initializes the EnemyWave instance.
 
@@ -41,7 +45,7 @@ class EnemyWave:
         self.enemies_spawned = 0
         self.last_spawn_time = 0
 
-    def update(self):
+    def update(self) -> None:
         """
         Updates the state of the enemy wave.
 
@@ -74,7 +78,7 @@ class EnemyWave:
         for enemy in enemies_to_remove:
             self.enemies.remove(enemy)
 
-    def is_wave_complete(self):
+    def is_wave_complete(self) -> bool:
         """
         Checks if the wave is complete.
 
@@ -83,7 +87,7 @@ class EnemyWave:
         """
         return self.enemies_spawned >= self.num_enemies and len(self.enemies) == 0
 
-    def get_enemies(self):
+    def get_enemies(self) -> List[EnemyBase]:
         """
         Gets the list of active enemies.
 
@@ -92,7 +96,7 @@ class EnemyWave:
         """
         return self.enemies
 
-    def get_total_enemies(self):
+    def get_total_enemies(self) -> int:
         """
         Gets the total number of enemies in the wave.
 
@@ -101,7 +105,7 @@ class EnemyWave:
         """
         return self.num_enemies
 
-    def get_remaining_enemies(self):
+    def get_remaining_enemies(self) -> int:
         """
         Gets the number of remaining enemies in the wave.
 

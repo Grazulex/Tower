@@ -1,11 +1,13 @@
+from typing import Optional
 import pygame
-from enteties.tour_base import Tour
+from pygame.surface import Surface
+from enteties.tour_base import TourBase
 from config.color import *
 from config.constants import (SLOW_TOWER_RANGE, SLOW_TOWER_ATTACK_SPEED,
                            SLOW_TOWER_DAMAGE, SLOW_TOWER_COST)
 from os.path import join
 
-class TourSlow(Tour):
+class TourSlow(TourBase):
     """
     Represents a slow defensive tower in the game.
 
@@ -20,7 +22,7 @@ class TourSlow(Tour):
         cost (int): The cost of the tower.
     """
 
-    def __init__(self, screen, column, row):
+    def __init__(self, screen: Optional[Surface], column: int, row: int):
         """
         Initializes a TourSlow instance.
 
@@ -29,16 +31,16 @@ class TourSlow(Tour):
             column (int): The column position of the tower on the grid.
             row (int): The row position of the tower on the grid.
         """
-        Tour.__init__(self, screen, column, row)
+        super().__init__(screen, column, row)
         self.color = YELLOW
         self.attack_range = SLOW_TOWER_RANGE
         self.attack_speed = SLOW_TOWER_ATTACK_SPEED
         self.damage = SLOW_TOWER_DAMAGE
         self.cost = SLOW_TOWER_COST
-        # Ne charger le son que si l'écran est défini (pas lors de l'initialisation des types)
+        # Only load sound if screen is defined (not during type initialization)
         if screen is not None:
             self.attack_sound = pygame.mixer.Sound(join('assets','sounds','crystal_laser_long.wav'))
 
-    def play_attack_sound(self):
+    def play_attack_sound(self) -> None:
         if hasattr(self, 'attack_sound'):
             self.attack_sound.play()

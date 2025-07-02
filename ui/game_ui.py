@@ -1,7 +1,11 @@
+from typing import Tuple, Optional
 import pygame
+from pygame.surface import Surface
 from config.color import *
 from config.constants import *
 from enteties.tours.tower_types import TowerType
+from design.enemy_wave import EnemyWave
+from game.game_manager import GameManager
 
 class GameUI:
     """
@@ -21,7 +25,7 @@ class GameUI:
         selected_tower (TowerType): The currently selected tower type.
     """
 
-    def __init__(self, screen):
+    def __init__(self, screen: Surface):
         """
         Initializes a GameUI instance.
 
@@ -39,7 +43,7 @@ class GameUI:
         all_towers = TowerType.get_all_towers()
         self.selected_tower = min(all_towers, key=lambda t: t.get_cost())
 
-    def draw_points(self, points):
+    def draw_points(self, points: int) -> None:
         """
         Draws the player's current points on the screen.
 
@@ -50,7 +54,7 @@ class GameUI:
         points_rect = points_text.get_rect(topright=(BOARD_WIDTH - 10, 10))
         self.screen.blit(points_text, points_rect)
 
-    def draw_lives(self, lives):
+    def draw_lives(self, lives: int) -> None:
         """
         Draws the player's remaining lives on the screen.
 
@@ -62,7 +66,7 @@ class GameUI:
         lives_rect = lives_text.get_rect(topright=(BOARD_WIDTH - 10, 50))
         self.screen.blit(lives_text, lives_rect)
 
-    def draw_game_over(self, game_manager):
+    def draw_game_over(self, game_manager: GameManager) -> None:
         """
         Draws the game over screen with relevant statistics.
 
@@ -86,7 +90,7 @@ class GameUI:
         kills_rect = kills_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + 80))
         self.screen.blit(kills_text, kills_rect)
 
-    def draw_enemy_info(self, enemy_wave, game_manager):
+    def draw_enemy_info(self, enemy_wave: EnemyWave, game_manager: GameManager) -> None:
         """
         Draws information about the current enemy wave.
 
@@ -115,7 +119,7 @@ class GameUI:
             next_wave_text = self.info_font.render("Next wave...", True, GREEN)
             self.screen.blit(next_wave_text, (x_start, y_start + 60))
 
-    def draw_preview(self, pos):
+    def draw_preview(self, pos: Tuple[int, int]) -> None:
         """
         Draws a preview of the selected tower at the specified position.
 
@@ -131,14 +135,14 @@ class GameUI:
             preview_surface.fill((color[0], color[1], color[2], 128))
             self.screen.blit(preview_surface, (cell_x, cell_y))
 
-    def draw_high_score(self, high_score):
+    def draw_high_score(self, high_score: int) -> None:
         """Draw the high score on the screen."""
         font = pygame.font.Font(None, 36)
         text = font.render(f'High Score: {high_score}', True, WHITE)
         text_rect = text.get_rect(topleft=(10, 10))
         self.screen.blit(text, text_rect)
 
-    def draw_tower_buttons(self, points):
+    def draw_tower_buttons(self, points: int) -> None:
         """
         Draws buttons for selecting towers based on the player's current points.
 
@@ -176,16 +180,15 @@ class GameUI:
                         (BOARD_WIDTH, WINDOW_HEIGHT),
                         2)
 
-    def handle_click(self, pos, current_points):
+    def handle_click(self, pos: Tuple[int, int]) -> Optional[TowerType]:
         """
         Handles click events for tower selection buttons.
 
         Args:
             pos (tuple): The position of the click (x, y).
-            current_points (int): The player's current points.
 
         Returns:
-            TowerType: The selected tower type, or None if no tower is selected.
+            Optional[TowerType]: The selected tower type, or None if no tower is selected.
         """
         for button_rect, tower_type, can_afford in self.tower_buttons:
             if button_rect.collidepoint(pos):
@@ -197,7 +200,7 @@ class GameUI:
                 return self.selected_tower
         return self.selected_tower
 
-    def get_selected_tower(self):
+    def get_selected_tower(self) -> Optional[TowerType]:
         """
         Retrieves the currently selected tower type.
 
