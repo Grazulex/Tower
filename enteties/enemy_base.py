@@ -101,12 +101,32 @@ class Enemy:
                 int(base_color[2] * health_ratio + damaged_color[2] * (1 - health_ratio))
             )
             
-            # Dessiner le cercle avec un dégradé radial simple
+            # Effet de lueur néon
+            glow_radius = int(self.radius * 1.5)
+            glow_color = (*current_color, 30)  # Faible alpha pour la lueur externe
+            
+            # Créer plusieurs cercles pour l'effet de lueur
+            for r in range(glow_radius, int(self.radius), -1):
+                alpha = int(30 * (r / glow_radius))
+                s = pygame.Surface((r * 2, r * 2), pygame.SRCALPHA)
+                pygame.draw.circle(s, (*current_color, alpha), (r, r), r)
+                self.screen.blit(s, (int(self.x - r), int(self.y - r)))
+            
+            # Corps principal de l'ennemi avec effet néon
             for r in range(int(self.radius), 0, -1):
                 alpha = int(255 * (r / self.radius))
                 s = pygame.Surface((r * 2, r * 2), pygame.SRCALPHA)
                 pygame.draw.circle(s, (*current_color, alpha), (r, r), r)
                 self.screen.blit(s, (int(self.x - r), int(self.y - r)))
+            
+            # Ajout d'un contour brillant
+            border_surface = pygame.Surface((int(self.radius * 2.2), int(self.radius * 2.2)), pygame.SRCALPHA)
+            pygame.draw.circle(border_surface, (*current_color, 160), 
+                             (int(self.radius * 1.1), int(self.radius * 1.1)), 
+                             int(self.radius), 2)
+            self.screen.blit(border_surface, 
+                            (int(self.x - self.radius * 1.1), 
+                             int(self.y - self.radius * 1.1)))
             
             # Afficher la santé
             text = self.font.render(str(self.health), True, self.text_color)

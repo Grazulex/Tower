@@ -55,13 +55,43 @@ class Particle:
 
     def draw(self, screen):
         """
-        Draws the particle on the screen.
+        Draws the particle on the screen with a neon effect.
 
         Args:
             screen (pygame.Surface): The surface where the particle is drawn.
         """
         if self.lifetime > 0:
-            pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)), self.radius)
+            # S'assurer que l'alpha est dans la plage valide (0-255)
+            self.alpha = max(0, min(255, int(self.alpha)))
+            
+            # Dessiner le corps principal de la particule
+            particle_color = (max(0, min(255, int(self.color[0]))),
+                            max(0, min(255, int(self.color[1]))),
+                            max(0, min(255, int(self.color[2]))),
+                            self.alpha)
+            
+            # Créer une surface pour la particule
+            size = max(1, int(self.radius * 2))
+            particle_surface = pygame.Surface((size, size), pygame.SRCALPHA)
+            
+            # Dessiner la particule
+            pygame.draw.circle(particle_surface,
+                             particle_color,
+                             (size // 2, size // 2),
+                             max(1, int(self.radius)))
+            
+            # Ajouter un point brillant au centre
+            highlight_radius = max(1, int(self.radius * 0.5))
+            highlight_color = (255, 255, 255, self.alpha // 2)
+            pygame.draw.circle(particle_surface,
+                             highlight_color,
+                             (size // 2, size // 2),
+                             highlight_radius)
+            
+            # Dessiner la particule sur l'écran
+            screen.blit(particle_surface,
+                       (int(self.x - size // 2),
+                        int(self.y - size // 2)))
 
     def is_alive(self):
         """

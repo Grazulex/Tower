@@ -37,6 +37,37 @@ from os.path import join
 GRID_WIDTH = BOARD_WIDTH // CELL_SIZE
 GRID_HEIGHT = BOARD_HEIGHT // CELL_SIZE
 
+def create_enemy_wave(screen, track_data, game_manager, is_new_wave=False):
+    """
+    Creates a new enemy wave with appropriate parameters based on the game state.
+    
+    Args:
+        screen: The game screen surface
+        track_data: The current track data
+        game_manager: The game manager instance
+        is_new_wave: Boolean indicating if this is a new wave (affects enemy count)
+    
+    Returns:
+        A new EnemyWave instance
+    """
+    if is_new_wave:
+        base_enemies = 25 + (game_manager.get_current_wave() - 1) * 5
+        max_enemies = 50 + (game_manager.get_current_wave() - 1) * 5
+        base_delay = max(2000 - (game_manager.get_current_wave() - 1) * 100, 500)
+        num_enemies = random.randint(base_enemies, max_enemies)
+        spawn_delay = random.randint(500, base_delay)
+    else:
+        num_enemies = random.randint(25, 50)
+        spawn_delay = random.randint(500, 2000)
+    
+    return EnemyWave(
+        screen,
+        track_data,
+        num_enemies=num_enemies,
+        spawn_delay=spawn_delay,
+        game_manager=game_manager
+    )
+
 def run():
     """
     Initializes and runs the main game loop.
@@ -76,13 +107,7 @@ def run():
     track.generate_random_track()
     track_data = track.get_track()
 
-    enemy_wave = EnemyWave(
-        screen,
-        track_data,
-        num_enemies=random.randint(25, 50),
-        spawn_delay=random.randint(500, 2000),
-        game_manager=game_manager
-    )
+    enemy_wave = create_enemy_wave(screen, track_data, game_manager)
 
     # Welcome screen loop
     while game_state.get_state() == GameState.MENU:
@@ -114,13 +139,7 @@ def run():
                 track = track_module.Track(screen)
                 track.generate_random_track()
                 track_data = track.get_track()
-                enemy_wave = EnemyWave(
-                    screen,
-                    track_data,
-                    num_enemies=random.randint(25, 50),
-                    spawn_delay=random.randint(500, 2000),
-                    game_manager=game_manager
-                )
+                enemy_wave = create_enemy_wave(screen, track_data, game_manager)
 
     # Main game loop
     while True:
@@ -204,13 +223,7 @@ def run():
                             track = track_module.Track(screen)
                             track.generate_random_track()
                             track_data = track.get_track()
-                            enemy_wave = EnemyWave(
-                                screen,
-                                track_data,
-                                num_enemies=random.randint(25, 50),
-                                spawn_delay=random.randint(500, 2000),
-                                game_manager=game_manager
-                            )
+                            enemy_wave = create_enemy_wave(screen, track_data, game_manager)
 
         # Draw tower preview if a tower is selected
         if game_ui.get_selected_tower() is not None:
@@ -237,18 +250,8 @@ def run():
             game_manager.next_wave()  # Progress to the next wave
             game_manager.add_points(game_manager.get_lives()*10) # Add points for completing the wave
 
-            # Generate new enemy wave parameters
-            base_enemies = 25 + (game_manager.get_current_wave() - 1) * 5
-            max_enemies = 50 + (game_manager.get_current_wave() - 1) * 5
-            base_delay = max(2000 - (game_manager.get_current_wave() - 1) * 100, 500)
-
-            enemy_wave = EnemyWave(
-                screen,
-                track_data,
-                num_enemies=random.randint(base_enemies, max_enemies),
-                spawn_delay=random.randint(500, base_delay),
-                game_manager=game_manager
-            )
+            # Create new enemy wave for the next level
+            enemy_wave = create_enemy_wave(screen, track_data, game_manager, is_new_wave=True)
 
         clock.tick(60)  # Limit the frame rate to 60 FPS
         pygame.display.flip()  # Update the display
