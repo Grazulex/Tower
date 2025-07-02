@@ -82,9 +82,9 @@ class Tour:
                 (self.cell_size * (self.column + 1), self.cell_size * self.row + i)
             )
 
-        text = self.font.render(str(self.damage), True, self.text_color)
-        text_rect = text.get_rect(center=(int(self.cell_size * self.column)+(self.cell_size//2), int(self.cell_size * self.row)+(self.cell_size//2)))
-        self.screen.blit(text, text_rect)
+        #text = self.font.render(str(self.damage), True, self.text_color)
+        #text_rect = text.get_rect(center=(int(self.cell_size * self.column)+(self.cell_size//2), int(self.cell_size * self.row)+(self.cell_size//2)))
+        #self.screen.blit(text, text_rect)
 
         center_x = self.cell_size * self.column + self.cell_size // 2
         center_y = self.cell_size * self.row + self.cell_size // 2
