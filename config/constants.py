@@ -30,7 +30,7 @@ NORMAL_TOWER_COST = 100  # Cost of normal towers in game points
 SLOW_TOWER_RANGE = 90  # Attack range of slow towers in pixels
 SLOW_TOWER_ATTACK_SPEED = 0.5  # Attack speed of slow towers (attacks per second)
 SLOW_TOWER_DAMAGE = 75  # Damage dealt by slow towers per attack
-SLOW_TOWER_COST = 175  # Cost of slow towers in game points
+SLOW_TOWER_COST = 200  # Cost of slow towers in game points
 
 # Power Tower Properties
 POWER_TOWER_RANGE = 45  # Attack range of power towers in pixels
