@@ -31,6 +31,7 @@ from design.enemy_wave import EnemyWave
 from ui.game_ui import GameUI
 from game.game_manager import GameManager
 from game.game_state import GameState
+from os.path import join
 
 # Calculate grid dimensions
 GRID_WIDTH = BOARD_WIDTH // CELL_SIZE
@@ -50,9 +51,9 @@ def run():
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))  # Create the game window
     
     # Charger les sons
-    wave_complete_sound = pygame.mixer.Sound('assets/musics/win_zen_crystal_melody.wav')
-    menu_music = pygame.mixer.Sound('assets/musics/zen_menu_loop.wav')
-    game_over_music = pygame.mixer.Sound('assets/musics/zen_death_melody.wav')
+    wave_complete_sound = pygame.mixer.Sound(join('assets','musics','win_zen_crystal_melody.wav'))
+    menu_music = pygame.mixer.Sound(join('assets','musics','zen_menu_loop.wav'))
+    game_over_music = pygame.mixer.Sound(join('assets','musics','zen_death_melody.wav'))
     
     # Démarrer la musique du menu en boucle
     menu_channel = pygame.mixer.Channel(0)  # Utiliser le canal 0 pour la musique du menu

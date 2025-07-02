@@ -4,6 +4,7 @@ from config.constants import (ENEMY_RADIUS, ENEMY_SPEED,
                             SMALL_ENEMY_RADIUS_MULTIPLIER, SMALL_ENEMY_HEALTH,
                             SMALL_ENEMY_SPEED_MULTIPLIER, SMALL_ENEMY_POINTS)
 from config.color import *
+from os.path import join
 
 
 class EnemySmall(Enemy):
@@ -40,7 +41,7 @@ class EnemySmall(Enemy):
         self.speed = ENEMY_SPEED * SMALL_ENEMY_SPEED_MULTIPLIER
         self.points_value = SMALL_ENEMY_POINTS
         # Charger le son de mort
-        self.death_sound = pygame.mixer.Sound('assets/sounds/crystal_bubble_small.wav')
+        self.death_sound = pygame.mixer.Sound(join('assets','sounds','crystal_bubble_small.wav'))
 
     def play_death_sound(self):
         """

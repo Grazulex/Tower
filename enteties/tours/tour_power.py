@@ -3,6 +3,7 @@ from enteties.tour_base import Tour
 from config.color import *
 from config.constants import (POWER_TOWER_RANGE, POWER_TOWER_ATTACK_SPEED,
                            POWER_TOWER_DAMAGE, POWER_TOWER_COST)
+from os.path import join
 
 class TourPower(Tour):
     """
@@ -36,7 +37,7 @@ class TourPower(Tour):
         self.cost = POWER_TOWER_COST
         # Ne charger le son que si l'écran est défini (pas lors de l'initialisation des types)
         if screen is not None:
-            self.attack_sound = pygame.mixer.Sound('assets/sounds/crystal_laser_short.wav')
+            self.attack_sound = pygame.mixer.Sound(join('assets','sounds','crystal_laser_short.wav'))
 
     def play_attack_sound(self):
         if hasattr(self, 'attack_sound'):
