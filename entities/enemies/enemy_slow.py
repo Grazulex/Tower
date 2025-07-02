@@ -2,29 +2,34 @@ from typing import List
 import pygame
 from pygame.surface import Surface
 from game.game_manager import GameManager
-from enteties.enemy_base import EnemyBase
+from entities.enemy_base import EnemyBase
+from config.constants import (ENEMY_RADIUS, ENEMY_SPEED,
+                            SLOW_ENEMY_RADIUS_MULTIPLIER, SLOW_ENEMY_HEALTH,
+                            SLOW_ENEMY_SPEED_MULTIPLIER, SLOW_ENEMY_POINTS)
 from config.color import *
-from config.constants import NORMAL_ENEMY_HEALTH, NORMAL_ENEMY_POINTS
 from os.path import join
 
 
-class EnemyNormal(EnemyBase):
+class EnemySlow(EnemyBase):
     """
-    Represents a normal enemy in the game.
+    Represents a smaller and faster enemy in the game.
 
     Inherits from the base Enemy class and modifies attributes to reflect
-    its unique characteristics, such as moderate health and point value.
+    its unique characteristics, such as reduced health, increased speed,
+    and moderate point value.
 
     Attributes:
         color (tuple): The color of the enemy (RGB format).
+        radius (float): The radius of the enemy's representation.
         text_color (tuple): The color of the text displaying the enemy's health.
         health (int): The health of the enemy.
+        speed (float): The speed of the enemy's movement.
         points_value (int): The points awarded for defeating the enemy.
     """
 
     def __init__(self, screen: Surface, track_points: List[tuple[int, int]], game_manager: GameManager):
         """
-        Initializes an EnemyNormal instance.
+        Initializes an EnemySmall instance.
 
         Args:
             screen (pygame.Surface): The game screen where the enemy is drawn.
@@ -32,15 +37,17 @@ class EnemyNormal(EnemyBase):
             game_manager (GameManager, optional): The game manager handling game state.
         """
         super().__init__(screen, track_points, game_manager)
-        self.color = BLUE
-        self.text_color = WHITE
-        self.health = NORMAL_ENEMY_HEALTH
-        self.points_value = NORMAL_ENEMY_POINTS
+        self.color = PURPLE
+        self.radius = ENEMY_RADIUS * SLOW_ENEMY_RADIUS_MULTIPLIER
+        self.text_color = BLACK
+        self.health = SLOW_ENEMY_HEALTH
+        self.speed = ENEMY_SPEED * SLOW_ENEMY_SPEED_MULTIPLIER
+        self.points_value = SLOW_ENEMY_POINTS
         # Load death sound
-        self.death_sound = pygame.mixer.Sound(join('assets','sounds','crystal_bubble_medium.wav'))
+        self.death_sound = pygame.mixer.Sound(join('assets','sounds','crystal_bubble_small.wav'))
 
     def play_death_sound(self) -> None:
         """
-        Plays the normal enemy death sound.
+        Plays the slow enemy death sound.
         """
         self.death_sound.play()

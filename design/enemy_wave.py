@@ -3,11 +3,11 @@ import pygame
 import random
 from pygame.surface import Surface
 from game.game_manager import GameManager
-from enteties.enemy_base import EnemyBase
-from enteties.enemies.enemy_normal import EnemyNormal
-from enteties.enemies.enemy_big import EnemyBig
-from enteties.enemies.enemy_small import EnemySmall
-from enteties.enemies.enemy_slow import EnemySlow
+from entities.enemy_base import EnemyBase
+from entities.enemies.enemy_normal import EnemyNormal
+from entities.enemies.enemy_big import EnemyBig
+from entities.enemies.enemy_small import EnemySmall
+from entities.enemies.enemy_slow import EnemySlow
 
 class EnemyWave:
     """

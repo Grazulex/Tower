@@ -2,12 +2,12 @@ from typing import List
 import pygame
 from pygame.surface import Surface
 from game.game_manager import GameManager
-from enteties.enemy_base import EnemyBase
+from entities.enemy_base import EnemyBase
 from config.color import *
 from config.constants import *
-from enteties.tours.tour_normal import TourNormal
-from enteties.tours.tour_power import TourPower
-from enteties.tours.tour_slow import TourSlow
+from entities.tours.tour_normal import TourNormal
+from entities.tours.tour_power import TourPower
+from entities.tours.tour_slow import TourSlow
 
 class Grid:
     """
