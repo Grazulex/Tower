@@ -8,46 +8,28 @@ from config.constants import (ENEMY_RADIUS, ENEMY_SPEED,
                             SMALL_ENEMY_SPEED_MULTIPLIER, SMALL_ENEMY_POINTS)
 from config.color import *
 from os.path import join
+from dataclasses import dataclass, field
 
-
+@dataclass
 class EnemySmall(EnemyBase):
-    """
-    Represents a smaller and faster enemy in the game.
+    screen: Surface
+    track_points: List[tuple[int, int]]
+    game_manager: GameManager
+    color: tuple = field(default=GREEN, init=False)
+    radius: float = field(default=ENEMY_RADIUS * SMALL_ENEMY_RADIUS_MULTIPLIER, init=False)
+    text_color: tuple = field(default=WHITE, init=False)
+    health: int = field(default=SMALL_ENEMY_HEALTH, init=False)
+    speed: float = field(default=ENEMY_SPEED * SMALL_ENEMY_SPEED_MULTIPLIER, init=False)
+    points_value: int = field(default=SMALL_ENEMY_POINTS, init=False)
+    death_sound: pygame.mixer.Sound = field(init=False)
+    """Small and fast enemy with reduced health"""
 
-    Inherits from the base Enemy class and modifies attributes to reflect
-    its unique characteristics, such as reduced health, increased speed,
-    and moderate point value.
-
-    Attributes:
-        color (tuple): The color of the enemy (RGB format).
-        radius (float): The radius of the enemy's representation.
-        text_color (tuple): The color of the text displaying the enemy's health.
-        health (int): The health of the enemy.
-        speed (float): The speed of the enemy's movement.
-        points_value (int): The points awarded for defeating the enemy.
-    """
-
-    def __init__(self, screen: Surface, track_points: List[tuple[int, int]], game_manager: GameManager):
+    def __post_init__(self):
         """
-        Initializes an EnemySmall instance.
+        Initializes the EnemySmall instance.
 
-        Args:
-            screen (pygame.Surface): The game screen where the enemy is drawn.
-            track_points (list): The points defining the track for enemy movement.
-            game_manager (GameManager, optional): The game manager handling game state.
+        Sets the initial position based on the first track point and loads the death sound.
         """
-        super().__init__(screen, track_points, game_manager)
-        self.color = GREEN
-        self.radius = ENEMY_RADIUS * SMALL_ENEMY_RADIUS_MULTIPLIER
-        self.text_color = WHITE
-        self.health = SMALL_ENEMY_HEALTH
-        self.speed = ENEMY_SPEED * SMALL_ENEMY_SPEED_MULTIPLIER
-        self.points_value = SMALL_ENEMY_POINTS
+        super().__post_init__()
         # Load death sound
-        self.death_sound = pygame.mixer.Sound(join('assets','sounds','crystal_bubble_small.wav'))
-
-    def play_death_sound(self) -> None:
-        """
-        Plays the small enemy death sound.
-        """
-        self.death_sound.play()
+        self.death_sound = pygame.mixer.Sound(join('assets', 'sounds', 'crystal_bubble_small.wav'))

@@ -5,11 +5,29 @@ from game.game_manager import GameManager
 from enteties.enemy_base import EnemyBase
 from config.constants import *
 from config.color import *
+from dataclasses import dataclass, field
 
+@dataclass()
 class TourBase:
+    screen: Surface
+    column: int
+    row: int
+    color: tuple = field(default=GREEN, init=False)
+    text_color: tuple = field(default=WHITE, init=False)
+    health: int = field(default=1000, init=False)
+    damage: int = field(default=35, init=False)
+    attack_speed: float = field(default=1.0, init=False)
+    last_attack_time: int = field(default_factory=lambda: pygame.time.get_ticks(), init=False)
+    attack_range: int = field(default=60, init=False)
+    cost: int = field(default=100, init=False)
+    cell_size: int = field(default=CELL_SIZE, init=False)
+    font: pygame.font.Font = field(default_factory=lambda: pygame.font.SysFont(None, 12), init=False)
+    is_attacking: bool = field(default=False, init=False)
+    attack_animation_duration: int = field(default=ATTACK_DURATION, init=False)
+    current_target: EnemyBase = field(default=EnemyBase, init=False)
     """
     Represents a defensive tower in the game.
-
+    
     Attributes:
         screen (pygame.Surface): The game screen where the tower is drawn.
         column (int): The column position of the tower on the grid.
@@ -28,39 +46,11 @@ class TourBase:
         attack_animation_duration (int): The duration of the attack animation (in milliseconds).
         current_target (Enemy): The current enemy being targeted by the tower.
     """
-
-    def play_attack_sound(self):
-        """
-        Method to be overridden in child classes to play specific attack sound.
-        """
-        pass
-
-    def __init__(self, screen: Surface, column: int, row: int):
-        """
-        Initializes a Tour instance.
-
-        Args:
-            screen (pygame.Surface): The game screen where the tower is drawn.
-            column (int): The column position of the tower on the grid.
-            row (int): The row position of the tower on the grid.
-        """
-        self.screen = screen
-        self.column = column
-        self.row = row
-        self.color = GREEN
-        self.text_color = WHITE
-        self.health = 1000
-        self.damage = 35
-        self.attack_speed = 1.0
-        self.last_attack_time = pygame.time.get_ticks()
-        self.attack_range = 60
-        self.cost = 100
-        self.cell_size = CELL_SIZE
-        self.font = pygame.font.SysFont(None, 12)
-
-        self.is_attacking = False
-        self.attack_animation_duration = ATTACK_DURATION
-        self.current_target = None
+    
+    def play_attack_sound(self) -> None:
+        """Plays the tower's attack sound if one is defined"""
+        if hasattr(self, 'attack_sound'):
+            self.attack_sound.play()
 
     def draw(self, enemies: List[EnemyBase], game_manager: GameManager) -> None:
         """

@@ -6,41 +6,26 @@ from enteties.enemy_base import EnemyBase
 from config.color import *
 from config.constants import NORMAL_ENEMY_HEALTH, NORMAL_ENEMY_POINTS
 from os.path import join
+from dataclasses import dataclass, field
 
-
+@dataclass
 class EnemyNormal(EnemyBase):
-    """
-    Represents a normal enemy in the game.
+    screen: Surface
+    track_points: List[tuple[int, int]]
+    game_manager: GameManager
+    color: tuple = field(default=BLUE, init=False)
+    text_color: tuple = field(default=WHITE, init=False)
+    health: int = field(default=NORMAL_ENEMY_HEALTH, init=False)
+    points_value: int = field(default=NORMAL_ENEMY_POINTS, init=False)
+    death_sound: pygame.mixer.Sound = field(init=False)
+    """Standard enemy with balanced health and point value"""
 
-    Inherits from the base Enemy class and modifies attributes to reflect
-    its unique characteristics, such as moderate health and point value.
-
-    Attributes:
-        color (tuple): The color of the enemy (RGB format).
-        text_color (tuple): The color of the text displaying the enemy's health.
-        health (int): The health of the enemy.
-        points_value (int): The points awarded for defeating the enemy.
-    """
-
-    def __init__(self, screen: Surface, track_points: List[tuple[int, int]], game_manager: GameManager):
+    def __post_init__(self):
         """
-        Initializes an EnemyNormal instance.
+        Initializes the EnemyNormal instance.
 
-        Args:
-            screen (pygame.Surface): The game screen where the enemy is drawn.
-            track_points (list): The points defining the track for enemy movement.
-            game_manager (GameManager, optional): The game manager handling game state.
+        Sets the initial position based on the first track point and loads the death sound.
         """
-        super().__init__(screen, track_points, game_manager)
-        self.color = BLUE
-        self.text_color = WHITE
-        self.health = NORMAL_ENEMY_HEALTH
-        self.points_value = NORMAL_ENEMY_POINTS
+        super().__post_init__()
         # Load death sound
-        self.death_sound = pygame.mixer.Sound(join('assets','sounds','crystal_bubble_medium.wav'))
-
-    def play_death_sound(self) -> None:
-        """
-        Plays the normal enemy death sound.
-        """
-        self.death_sound.play()
+        self.death_sound = pygame.mixer.Sound(join('assets', 'sounds', 'crystal_bubble_medium.wav'))

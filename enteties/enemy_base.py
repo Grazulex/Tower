@@ -5,8 +5,27 @@ from game.game_manager import GameManager
 from config.constants import *
 from config.color import *
 from effects.particle import Particle
+from dataclasses import dataclass, field
 
+@dataclass
 class EnemyBase:
+    screen: Surface
+    track_points: List[Tuple[int, int]]
+    game_manager: GameManager
+    current_point_index: int = field(default=0, init=False)
+    health: int = field(default=100, init=False)
+    font: pygame.font.Font = field(default_factory=lambda: pygame.font.SysFont(None, 12), init=False)
+    particles: List[Particle] = field(default_factory=list, init=False)
+    visible: bool = field(default=True, init=False)
+    points_value: int = field(default=25, init=False)
+    x: float = field(init=False)
+    y: float = field(init=False)
+    radius: int = field(default=ENEMY_RADIUS, init=False)
+    color: Tuple[int, int, int] = field(default=RED, init=False)
+    text_color: Tuple[int, int, int] = field(default=BLACK, init=False)
+    speed: float = field(default=ENEMY_SPEED, init=False)
+    reached_end: bool = field(default=False, init=False)
+
     """
     Represents an enemy in the game.
 
@@ -29,35 +48,18 @@ class EnemyBase:
         reached_end (bool): Whether the enemy has reached the end of the track.
     """
 
-    def __init__(self, screen: Surface, track_points: List[Tuple[int, int]], game_manager: GameManager):
+    def __post_init__(self):
         """
-        Initializes an Enemy instance.
+        Initializes the enemy's position based on the first track point.
 
-        Args:
-            screen (pygame.Surface): The game screen where the enemy is drawn.
-            track_points (list): The points defining the track for enemy movement.
-            game_manager (GameManager): The game manager handling game state.
+        Sets the initial x and y coordinates based on the first track point in the track_points list.
         """
-        self.screen = screen
-        self.track_points = track_points
-        self.game_manager = game_manager
-        self.current_point_index = 0
-        self.health = 100
-        self.font = pygame.font.SysFont(None, 12)
-        self.particles = []
-        self.visible = True
-        self.points_value = 25
+        if not self.track_points:
+            raise ValueError("Track points must not be empty.")
 
-        start_row, start_col = track_points[0]
+        start_row, start_col = self.track_points[0]
         self.x = start_col * CELL_SIZE + CELL_SIZE // 2
         self.y = start_row * CELL_SIZE + CELL_SIZE // 2
-
-        self.radius = ENEMY_RADIUS
-        self.color = RED
-        self.text_color = BLACK
-        self.speed = ENEMY_SPEED
-
-        self.reached_end = False
 
     def move(self) -> None:
         """
@@ -163,10 +165,9 @@ class EnemyBase:
             self.remove()
 
     def play_death_sound(self) -> None:
-        """
-        Method to be overridden in child classes to play specific death sound.
-        """
-        pass
+        """Plays the enemy's death sound if one is defined"""
+        if hasattr(self, 'death_sound'):
+            self.death_sound.play()
 
     def remove(self) -> None:
         """
