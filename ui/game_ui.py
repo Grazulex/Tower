@@ -3,7 +3,7 @@ import pygame
 from pygame.surface import Surface
 from config.color import *
 from config.constants import *
-from enteties.tours.tower_types import TowerType
+from entities.tours.tower_types import TowerType
 from design.enemy_wave import EnemyWave
 from game.game_manager import GameManager
 

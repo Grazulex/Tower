@@ -2,7 +2,7 @@ from typing import List
 import pygame
 from pygame.surface import Surface
 from game.game_manager import GameManager
-from enteties.enemy_base import EnemyBase
+from entities.enemy_base import EnemyBase
 from config.constants import *
 from config.color import *
 from dataclasses import dataclass, field

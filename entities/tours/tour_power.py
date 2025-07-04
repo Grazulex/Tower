@@ -1,7 +1,7 @@
 from typing import Optional
 import pygame
 from pygame.surface import Surface
-from enteties.tour_base import TourBase
+from entities.tour_base import TourBase
 from config.color import *
 from config.constants import (POWER_TOWER_RANGE, POWER_TOWER_ATTACK_SPEED,
                            POWER_TOWER_DAMAGE, POWER_TOWER_COST)

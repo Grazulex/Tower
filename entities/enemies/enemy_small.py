@@ -2,7 +2,7 @@ from typing import List
 import pygame
 from pygame.surface import Surface
 from game.game_manager import GameManager
-from enteties.enemy_base import EnemyBase
+from entities.enemy_base import EnemyBase
 from config.constants import (ENEMY_RADIUS, ENEMY_SPEED,
                             SMALL_ENEMY_RADIUS_MULTIPLIER, SMALL_ENEMY_HEALTH,
                             SMALL_ENEMY_SPEED_MULTIPLIER, SMALL_ENEMY_POINTS)
