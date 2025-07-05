@@ -1,7 +1,4 @@
-from typing import List
 import pygame
-from pygame.surface import Surface
-from game.game_manager import GameManager
 from entities.enemy_base import EnemyBase
 from config.constants import (
     ENEMY_RADIUS,
@@ -18,9 +15,6 @@ from dataclasses import dataclass, field
 
 @dataclass
 class EnemyBig(EnemyBase):
-    screen: Surface
-    track_points: List[tuple[int, int]]
-    game_manager: GameManager
     color: tuple = field(default=YELLOW, init=False)
     radius: float = field(
         default=ENEMY_RADIUS * BIG_ENEMY_RADIUS_MULTIPLIER, init=False
@@ -28,7 +22,6 @@ class EnemyBig(EnemyBase):
     health: int = field(default=BIG_ENEMY_HEALTH, init=False)
     speed: float = field(default=ENEMY_SPEED * BIG_ENEMY_SPEED_MULTIPLIER, init=False)
     points_value: int = field(default=BIG_ENEMY_POINTS, init=False)
-    death_sound: pygame.mixer.Sound = field(init=False)
     """Larger enemy with high health, reduced speed, and higher point value"""
 
     def __post_init__(self):

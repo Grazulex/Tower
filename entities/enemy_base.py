@@ -28,6 +28,7 @@ class EnemyBase:
     text_color: Tuple[int, int, int] = field(default=BLACK, init=False)
     speed: float = field(default=ENEMY_SPEED, init=False)
     reached_end: bool = field(default=False, init=False)
+    death_sound: pygame.mixer.Sound = field(init=False)
 
     """
     Represents an enemy in the game.

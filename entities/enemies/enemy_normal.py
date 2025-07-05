@@ -1,7 +1,4 @@
-from typing import List
 import pygame
-from pygame.surface import Surface
-from game.game_manager import GameManager
 from entities.enemy_base import EnemyBase
 from config.color import BLUE, WHITE
 from config.constants import NORMAL_ENEMY_HEALTH, NORMAL_ENEMY_POINTS
@@ -11,14 +8,10 @@ from dataclasses import dataclass, field
 
 @dataclass
 class EnemyNormal(EnemyBase):
-    screen: Surface
-    track_points: List[tuple[int, int]]
-    game_manager: GameManager
     color: tuple = field(default=BLUE, init=False)
     text_color: tuple = field(default=WHITE, init=False)
     health: int = field(default=NORMAL_ENEMY_HEALTH, init=False)
     points_value: int = field(default=NORMAL_ENEMY_POINTS, init=False)
-    death_sound: pygame.mixer.Sound = field(init=False)
     """Standard enemy with balanced health and point value"""
 
     def __post_init__(self):

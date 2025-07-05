@@ -1,6 +1,4 @@
-from typing import Optional
 import pygame
-from pygame.surface import Surface
 from entities.tour_base import TourBase
 from config.color import BLUE
 from config.constants import (
@@ -15,9 +13,6 @@ from dataclasses import dataclass, field
 
 @dataclass
 class TourNormal(TourBase):
-    screen: Optional[Surface]
-    column: int
-    row: int
     color: tuple = field(default=BLUE, init=False)
     attack_range: int = field(default=NORMAL_TOWER_RANGE, init=False)
     attack_speed: float = field(default=NORMAL_TOWER_ATTACK_SPEED, init=False)
