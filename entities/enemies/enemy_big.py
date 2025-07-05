@@ -15,13 +15,16 @@ from config.color import YELLOW
 from os.path import join
 from dataclasses import dataclass, field
 
+
 @dataclass
 class EnemyBig(EnemyBase):
     screen: Surface
     track_points: List[tuple[int, int]]
     game_manager: GameManager
     color: tuple = field(default=YELLOW, init=False)
-    radius: float = field(default=ENEMY_RADIUS * BIG_ENEMY_RADIUS_MULTIPLIER, init=False)
+    radius: float = field(
+        default=ENEMY_RADIUS * BIG_ENEMY_RADIUS_MULTIPLIER, init=False
+    )
     health: int = field(default=BIG_ENEMY_HEALTH, init=False)
     speed: float = field(default=ENEMY_SPEED * BIG_ENEMY_SPEED_MULTIPLIER, init=False)
     points_value: int = field(default=BIG_ENEMY_POINTS, init=False)
@@ -36,4 +39,6 @@ class EnemyBig(EnemyBase):
         """
         super().__post_init__()
         # Load death sound
-        self.death_sound = pygame.mixer.Sound(join('assets', 'sounds', 'crystal_bubble_large.wav'))
+        self.death_sound = pygame.mixer.Sound(
+            join("assets", "sounds", "crystal_bubble_large.wav")
+        )

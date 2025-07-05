@@ -8,6 +8,7 @@ from config.constants import NORMAL_ENEMY_HEALTH, NORMAL_ENEMY_POINTS
 from os.path import join
 from dataclasses import dataclass, field
 
+
 @dataclass
 class EnemyNormal(EnemyBase):
     screen: Surface
@@ -28,4 +29,6 @@ class EnemyNormal(EnemyBase):
         """
         super().__post_init__()
         # Load death sound
-        self.death_sound = pygame.mixer.Sound(join('assets', 'sounds', 'crystal_bubble_medium.wav'))
+        self.death_sound = pygame.mixer.Sound(
+            join("assets", "sounds", "crystal_bubble_medium.wav")
+        )

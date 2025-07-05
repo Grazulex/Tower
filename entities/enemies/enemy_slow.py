@@ -15,13 +15,16 @@ from config.color import PURPLE, BLACK
 from os.path import join
 from dataclasses import dataclass, field
 
+
 @dataclass
 class EnemySlow(EnemyBase):
     screen: Surface
     track_points: List[tuple[int, int]]
     game_manager: GameManager
     color: tuple = field(default=PURPLE, init=False)
-    radius: float = field(default=ENEMY_RADIUS * SLOW_ENEMY_RADIUS_MULTIPLIER, init=False)
+    radius: float = field(
+        default=ENEMY_RADIUS * SLOW_ENEMY_RADIUS_MULTIPLIER, init=False
+    )
     text_color: tuple = field(default=BLACK, init=False)
     health: int = field(default=SLOW_ENEMY_HEALTH, init=False)
     speed: float = field(default=ENEMY_SPEED * SLOW_ENEMY_SPEED_MULTIPLIER, init=False)
@@ -37,4 +40,6 @@ class EnemySlow(EnemyBase):
         """
         super().__post_init__()
         # Load death sound
-        self.death_sound = pygame.mixer.Sound(join('assets', 'sounds', 'crystal_bubble_small.wav'))
+        self.death_sound = pygame.mixer.Sound(
+            join("assets", "sounds", "crystal_bubble_small.wav")
+        )

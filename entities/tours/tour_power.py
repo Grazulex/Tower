@@ -12,6 +12,7 @@ from config.constants import (
 from os.path import join
 from dataclasses import dataclass, field
 
+
 @dataclass
 class TourPower(TourBase):
     screen: Optional[Surface]
@@ -23,12 +24,11 @@ class TourPower(TourBase):
     damage: int = field(default=POWER_TOWER_DAMAGE, init=False)
     cost: int = field(default=POWER_TOWER_COST, init=False)
     """High damage tower with increased attack speed and range"""
+
     def __post_init__(self):
         super().__init__(self.screen, self.column, self.row)
         # Only load sound if screen is defined (not during type initialization)
         if self.screen is not None:
-            self.attack_sound = pygame.mixer.Sound(join('assets', 'sounds', 'crystal_laser_short.wav'))
-
-    def play_attack_sound(self) -> None:
-        if hasattr(self, "attack_sound"):
-            self.attack_sound.play()
+            self.attack_sound = pygame.mixer.Sound(
+                join("assets", "sounds", "crystal_laser_short.wav")
+            )

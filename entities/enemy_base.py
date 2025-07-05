@@ -7,6 +7,7 @@ from config.color import RED, BLACK
 from effects.particle import Particle
 from dataclasses import dataclass, field
 
+
 @dataclass
 class EnemyBase:
     screen: Surface
@@ -14,7 +15,9 @@ class EnemyBase:
     game_manager: GameManager
     current_point_index: int = field(default=0, init=False)
     health: int = field(default=100, init=False)
-    font: pygame.font.Font = field(default_factory=lambda: pygame.font.SysFont(None, 12), init=False)
+    font: pygame.font.Font = field(
+        default_factory=lambda: pygame.font.SysFont(None, 12), init=False
+    )
     particles: List[Particle] = field(default_factory=list, init=False)
     visible: bool = field(default=True, init=False)
     points_value: int = field(default=25, init=False)
@@ -179,7 +182,7 @@ class EnemyBase:
 
     def play_death_sound(self) -> None:
         """Plays the enemy's death sound if one is defined"""
-        if hasattr(self, 'death_sound'):
+        if hasattr(self, "death_sound"):
             self.death_sound.play()
 
     def remove(self) -> None:

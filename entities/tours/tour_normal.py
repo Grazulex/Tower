@@ -12,8 +12,8 @@ from config.constants import (
 from os.path import join
 from dataclasses import dataclass, field
 
-@dataclass
 
+@dataclass
 class TourNormal(TourBase):
     screen: Optional[Surface]
     column: int
@@ -24,8 +24,11 @@ class TourNormal(TourBase):
     damage: int = field(default=NORMAL_TOWER_DAMAGE, init=False)
     cost: int = field(default=NORMAL_TOWER_COST, init=False)
     """Tour with balanced stats for general purpose defense"""
+
     def __post_init__(self):
         super().__init__(self.screen, self.column, self.row)
         # Only load sound if screen is defined (not during type initialization)
         if self.screen is not None:
-            self.attack_sound = pygame.mixer.Sound(join('assets', 'sounds', 'crystal_laser_medium.wav'))
+            self.attack_sound = pygame.mixer.Sound(
+                join("assets", "sounds", "crystal_laser_medium.wav")
+            )
