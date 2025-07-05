@@ -22,6 +22,4 @@ class EnemyNormal(EnemyBase):
         """
         super().__post_init__()
         # Load death sound
-        self.death_sound = pygame.mixer.Sound(
-            join("assets", "sounds", "crystal_bubble_medium.wav")
-        )
+        self.death_sound = pygame.mixer.Sound(join("assets", "sounds", "crystal_bubble_medium.wav"))

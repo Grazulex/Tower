@@ -15,9 +15,7 @@ class EnemyBase:
     game_manager: GameManager
     current_point_index: int = field(default=0, init=False)
     health: int = field(default=100, init=False)
-    font: pygame.font.Font = field(
-        default_factory=lambda: pygame.font.SysFont(None, 12), init=False
-    )
+    font: pygame.font.Font = field(default_factory=lambda: pygame.font.SysFont(None, 12), init=False)
     particles: List[Particle] = field(default_factory=list, init=False)
     visible: bool = field(default=True, init=False)
     points_value: int = field(default=25, init=False)
@@ -105,15 +103,9 @@ class EnemyBase:
             base_color = self.color
             damaged_color = ENEMY_DAMAGED_COLOR  # Color for damaged enemies
             current_color = (
-                int(
-                    base_color[0] * health_ratio + damaged_color[0] * (1 - health_ratio)
-                ),
-                int(
-                    base_color[1] * health_ratio + damaged_color[1] * (1 - health_ratio)
-                ),
-                int(
-                    base_color[2] * health_ratio + damaged_color[2] * (1 - health_ratio)
-                ),
+                int(base_color[0] * health_ratio + damaged_color[0] * (1 - health_ratio)),
+                int(base_color[1] * health_ratio + damaged_color[1] * (1 - health_ratio)),
+                int(base_color[2] * health_ratio + damaged_color[2] * (1 - health_ratio)),
             )
 
             # Neon glow effect
@@ -134,9 +126,7 @@ class EnemyBase:
                 self.screen.blit(s, (int(self.x - r), int(self.y - r)))
 
             # Add glowing border
-            border_surface = pygame.Surface(
-                (int(self.radius * 2.2), int(self.radius * 2.2)), pygame.SRCALPHA
-            )
+            border_surface = pygame.Surface((int(self.radius * 2.2), int(self.radius * 2.2)), pygame.SRCALPHA)
             pygame.draw.circle(
                 border_surface,
                 (*current_color, 160),

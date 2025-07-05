@@ -26,15 +26,11 @@ class TourBase:
     health: int = field(default=1000, init=False)
     damage: int = field(default=35, init=False)
     attack_speed: float = field(default=1.0, init=False)
-    last_attack_time: int = field(
-        default_factory=lambda: pygame.time.get_ticks(), init=False
-    )
+    last_attack_time: int = field(default_factory=lambda: pygame.time.get_ticks(), init=False)
     attack_range: int = field(default=60, init=False)
     cost: int = field(default=100, init=False)
     cell_size: int = field(default=CELL_SIZE, init=False)
-    font: pygame.font.Font = field(
-        default_factory=lambda: pygame.font.SysFont(None, 12), init=False
-    )
+    font: pygame.font.Font = field(default_factory=lambda: pygame.font.SysFont(None, 12), init=False)
     is_attacking: bool = field(default=False, init=False)
     attack_animation_duration: int = field(default=ATTACK_DURATION, init=False)
     current_target: EnemyBase = field(default=EnemyBase, init=False)
@@ -101,9 +97,7 @@ class TourBase:
             pygame.draw.line(tower_surface, grid_color, (0, i), (size, i))
 
         # Draw the main square with a glowing border
-        inner_rect = pygame.Rect(
-            padding, padding, size - 2 * padding, size - 2 * padding
-        )
+        inner_rect = pygame.Rect(padding, padding, size - 2 * padding, size - 2 * padding)
         pygame.draw.rect(tower_surface, self.color, inner_rect)
 
         # Add highlights on the edges
@@ -150,21 +144,13 @@ class TourBase:
         # Display shooting range only for the first two waves
         if game_manager and game_manager.get_current_wave() <= 2:
             # Create a surface with alpha channel for the shooting range
-            range_surface = pygame.Surface(
-                (self.attack_range * 2, self.attack_range * 2), pygame.SRCALPHA
-            )
+            range_surface = pygame.Surface((self.attack_range * 2, self.attack_range * 2), pygame.SRCALPHA)
 
             # Draw multiple concentric circles with varying transparency
-            for r in range(
-                self.attack_range, self.attack_range - RANGE_CIRCLES_COUNT, -1
-            ):
+            for r in range(self.attack_range, self.attack_range - RANGE_CIRCLES_COUNT, -1):
                 # Calculate alpha based on circle position
-                progress = (
-                    r - (self.attack_range - RANGE_CIRCLES_COUNT)
-                ) / RANGE_CIRCLES_COUNT
-                alpha = int(
-                    RANGE_MIN_ALPHA + (RANGE_MAX_ALPHA - RANGE_MIN_ALPHA) * progress
-                )
+                progress = (r - (self.attack_range - RANGE_CIRCLES_COUNT)) / RANGE_CIRCLES_COUNT
+                alpha = int(RANGE_MIN_ALPHA + (RANGE_MAX_ALPHA - RANGE_MIN_ALPHA) * progress)
 
                 # Use a slightly tinted color based on the tower's color
                 range_color = (
@@ -199,9 +185,7 @@ class TourBase:
         if enemies:
             enemies_in_range = []
             for enemy in enemies:
-                distance = (
-                    (enemy.x - center_x) ** 2 + (enemy.y - center_y) ** 2
-                ) ** 0.5
+                distance = ((enemy.x - center_x) ** 2 + (enemy.y - center_y) ** 2) ** 0.5
                 if distance <= self.attack_range:
                     enemies_in_range.append(enemy)
 
@@ -209,9 +193,7 @@ class TourBase:
                 current_time = pygame.time.get_ticks()
 
                 # Filter valid enemies (alive and visible)
-                valid_enemies = [
-                    e for e in enemies_in_range if e.visible and e.health > 0
-                ]
+                valid_enemies = [e for e in enemies_in_range if e.visible and e.health > 0]
 
                 if valid_enemies:
                     attack_delay = (1 / self.attack_speed) * 1000
@@ -226,11 +208,7 @@ class TourBase:
                             self.is_attacking = True
                             self.current_target = target
 
-                if (
-                    self.is_attacking
-                    and self.current_target
-                    and self.current_target.visible
-                ):
+                if self.is_attacking and self.current_target and self.current_target.visible:
                     attack_animation_time = current_time - self.last_attack_time
                     if attack_animation_time <= self.attack_animation_duration:
                         pygame.draw.line(

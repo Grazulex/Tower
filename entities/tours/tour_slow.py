@@ -24,6 +24,4 @@ class TourSlow(TourBase):
         super().__init__(self.screen, self.column, self.row)
         # Only load sound if screen is defined (not during type initialization)
         if self.screen is not None:
-            self.attack_sound = pygame.mixer.Sound(
-                join("assets", "sounds", "crystal_laser_long.wav")
-            )
+            self.attack_sound = pygame.mixer.Sound(join("assets", "sounds", "crystal_laser_long.wav"))

@@ -95,18 +95,12 @@ def run() -> None:
     """
     pygame.init()
     pygame.mixer.init()
-    screen = pygame.display.set_mode(
-        (WINDOW_WIDTH, WINDOW_HEIGHT)
-    )  # Create the game window
+    screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))  # Create the game window
 
     # Load sounds
-    wave_complete_sound = pygame.mixer.Sound(
-        join("assets", "musics", "win_zen_crystal_melody.wav")
-    )
+    wave_complete_sound = pygame.mixer.Sound(join("assets", "musics", "win_zen_crystal_melody.wav"))
     menu_music = pygame.mixer.Sound(join("assets", "musics", "zen_menu_loop.wav"))
-    game_over_music = pygame.mixer.Sound(
-        join("assets", "musics", "zen_death_melody.wav")
-    )
+    game_over_music = pygame.mixer.Sound(join("assets", "musics", "zen_death_melody.wav"))
 
     menu_channel = pygame.mixer.Channel(0)
     menu_channel.play(menu_music, loops=-1)
@@ -136,9 +130,7 @@ def run() -> None:
         # Display welcome message
         font = pygame.font.Font(None, 74)
         text = font.render("Welcome to the game!", True, WHITE)
-        screen.blit(
-            text, (WINDOW_WIDTH // 2 - text.get_width() // 2, WINDOW_HEIGHT // 3)
-        )
+        screen.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, WINDOW_HEIGHT // 3))
 
         play_text = font.render("Press Enter to start", True, WHITE)
         screen.blit(
@@ -180,9 +172,7 @@ def run() -> None:
 
                 # Handle tower placement
                 if (
-                    not any(
-                        button[0].collidepoint(pos) for button in game_ui.tower_buttons
-                    )
+                    not any(button[0].collidepoint(pos) for button in game_ui.tower_buttons)
                     and game_ui.get_selected_tower() is not None
                 ):
                     column = pos[0] // CELL_SIZE
@@ -190,9 +180,7 @@ def run() -> None:
 
                     if 0 <= row < GRID_HEIGHT and 0 <= column < GRID_WIDTH:
                         # Check if the cell is valid for tower placement
-                        if (row, column) not in track_data and grid_data[row][
-                            column
-                        ] == 0:
+                        if (row, column) not in track_data and grid_data[row][column] == 0:
                             tower_type = game_ui.get_selected_tower()
                             if game_manager.buy_tower(
                                 tower_type.tower_class
@@ -229,9 +217,7 @@ def run() -> None:
                 # Add instruction text
                 font = pygame.font.Font(None, 36)
                 text = font.render("Press Enter to return to the menu", True, WHITE)
-                text_rect = text.get_rect(
-                    center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT - 100)
-                )
+                text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT - 100))
                 screen.blit(text, text_rect)
 
                 pygame.display.flip()
@@ -253,9 +239,7 @@ def run() -> None:
                             track = track_module.Track(screen)
                             track.generate_random_track()
                             track_data = track.get_track()
-                            enemy_wave = create_enemy_wave(
-                                screen, track_data, game_manager
-                            )
+                            enemy_wave = create_enemy_wave(screen, track_data, game_manager)
 
         # Draw tower preview if a tower is selected
         if game_ui.get_selected_tower() is not None:
@@ -280,14 +264,10 @@ def run() -> None:
             track_data = track.get_track()
 
             game_manager.next_wave()  # Progress to the next wave
-            game_manager.add_points(
-                game_manager.get_lives() * 10
-            )  # Add points for completing the wave
+            game_manager.add_points(game_manager.get_lives() * 10)  # Add points for completing the wave
 
             # Create new enemy wave for the next level
-            enemy_wave = create_enemy_wave(
-                screen, track_data, game_manager, is_new_wave=True
-            )
+            enemy_wave = create_enemy_wave(screen, track_data, game_manager, is_new_wave=True)
 
         clock.tick(60)  # Limit the frame rate to 60 FPS
         pygame.display.flip()  # Update the display

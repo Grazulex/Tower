@@ -39,9 +39,7 @@ class Particle:
         self.x = x
         self.y = y
         # Create a smoother color variation
-        color_variation = random.randint(
-            -PARTICLE_COLOR_VARIATION, PARTICLE_COLOR_VARIATION
-        )
+        color_variation = random.randint(-PARTICLE_COLOR_VARIATION, PARTICLE_COLOR_VARIATION)
         self.color = (
             max(0, min(255, color[0] + color_variation)),
             max(0, min(255, color[1] + color_variation)),
@@ -107,9 +105,7 @@ class Particle:
             )
 
             # Draw the particle on the screen
-            screen.blit(
-                particle_surface, (int(self.x - size // 2), int(self.y - size // 2))
-            )
+            screen.blit(particle_surface, (int(self.x - size // 2), int(self.y - size // 2)))
 
     def is_alive(self) -> bool:
         """

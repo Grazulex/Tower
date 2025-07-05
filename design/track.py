@@ -69,13 +69,8 @@ class Track:
         The track is drawn as a series of connected lines between the track points.
         """
         if len(self.track) > 1:
-            points = [
-                (col * CELL_SIZE + CELL_SIZE // 2, row * CELL_SIZE + CELL_SIZE // 2)
-                for row, col in self.track
-            ]
-            pygame.draw.lines(
-                self.screen, self.track_color, False, points, self.line_width
-            )
+            points = [(col * CELL_SIZE + CELL_SIZE // 2, row * CELL_SIZE + CELL_SIZE // 2) for row, col in self.track]
+            pygame.draw.lines(self.screen, self.track_color, False, points, self.line_width)
 
     def get_track(self) -> List[Tuple[int, int]]:
         """

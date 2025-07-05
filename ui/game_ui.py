@@ -62,9 +62,7 @@ class GameUI:
         Args:
             lives (int): The number of lives remaining.
         """
-        lives_text = self.font.render(
-            f"Lives: {lives}", True, RED if lives < 5 else WHITE
-        )
+        lives_text = self.font.render(f"Lives: {lives}", True, RED if lives < 5 else WHITE)
         lives_rect = lives_text.get_rect(topright=(BOARD_WIDTH - 10, 50))
         self.screen.blit(lives_text, lives_rect)
 
@@ -77,33 +75,19 @@ class GameUI:
         """
         game_over_font = pygame.font.SysFont(None, 72)
         game_over_text = game_over_font.render("GAME OVER", True, RED)
-        text_rect = game_over_text.get_rect(
-            center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 3)
-        )
+        text_rect = game_over_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 3))
         self.screen.blit(game_over_text, text_rect)
 
-        points_text = self.font.render(
-            f"Score: {game_manager.get_points()}", True, YELLOW
-        )
-        points_rect = points_text.get_rect(
-            center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
-        )
+        points_text = self.font.render(f"Score: {game_manager.get_points()}", True, YELLOW)
+        points_rect = points_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2))
         self.screen.blit(points_text, points_rect)
 
-        wave_text = self.font.render(
-            f"Wave reached: {game_manager.get_current_wave()}", True, WHITE
-        )
-        wave_rect = wave_text.get_rect(
-            center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + 40)
-        )
+        wave_text = self.font.render(f"Wave reached: {game_manager.get_current_wave()}", True, WHITE)
+        wave_rect = wave_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + 40))
         self.screen.blit(wave_text, wave_rect)
 
-        kills_text = self.font.render(
-            f"Enemies killed: {game_manager.get_enemies_killed()}", True, WHITE
-        )
-        kills_rect = kills_text.get_rect(
-            center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + 80)
-        )
+        kills_text = self.font.render(f"Enemies killed: {game_manager.get_enemies_killed()}", True, WHITE)
+        kills_rect = kills_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + 80))
         self.screen.blit(kills_text, kills_rect)
 
     def draw_enemy_info(self, enemy_wave: EnemyWave, game_manager: GameManager) -> None:
@@ -117,24 +101,18 @@ class GameUI:
         x_start = BOARD_WIDTH + 10
 
         y_start = WINDOW_HEIGHT - 120
-        wave_text = self.info_font.render(
-            f"Wave {game_manager.get_current_wave()}", True, YELLOW
-        )
+        wave_text = self.info_font.render(f"Wave {game_manager.get_current_wave()}", True, YELLOW)
         self.screen.blit(wave_text, (x_start, y_start))
 
         y_start += 30
-        total_text = self.info_font.render(
-            f"Total: {enemy_wave.get_total_enemies()}", True, WHITE
-        )
+        total_text = self.info_font.render(f"Total: {enemy_wave.get_total_enemies()}", True, WHITE)
         self.screen.blit(total_text, (x_start, y_start))
 
         remaining = enemy_wave.get_remaining_enemies()
         remaining_text = self.info_font.render(f"Remaining: {remaining}", True, WHITE)
         self.screen.blit(remaining_text, (x_start, y_start + 20))
 
-        killed_text = self.info_font.render(
-            f"Killed: {game_manager.get_enemies_killed()}", True, WHITE
-        )
+        killed_text = self.info_font.render(f"Killed: {game_manager.get_enemies_killed()}", True, WHITE)
         self.screen.blit(killed_text, (x_start, y_start + 40))
 
         if game_manager.is_wave_completed():
@@ -184,26 +162,20 @@ class GameUI:
             y = y_start + i * (self.button_size + self.button_padding)
             button_rect = pygame.Rect(ui_x, y, self.button_size, self.button_size)
 
-            button_color = (
-                color if can_afford else (color[0] // 2, color[1] // 2, color[2] // 2)
-            )
+            button_color = color if can_afford else (color[0] // 2, color[1] // 2, color[2] // 2)
             if self.selected_tower == tower_type:
                 pygame.draw.rect(self.screen, WHITE, button_rect, 3)
             pygame.draw.rect(self.screen, button_color, button_rect)
 
             text_color = WHITE if can_afford else (128, 128, 128)
             cost_text = self.button_font.render(str(cost), True, text_color)
-            cost_rect = cost_text.get_rect(
-                midleft=(ui_x + self.button_size + 5, y + self.button_size // 2)
-            )
+            cost_rect = cost_text.get_rect(midleft=(ui_x + self.button_size + 5, y + self.button_size // 2))
             self.screen.blit(cost_text, cost_rect)
 
             click_rect = pygame.Rect(ui_x, y, self.button_size + 50, self.button_size)
             self.tower_buttons.append((click_rect, tower_type, can_afford))
 
-        pygame.draw.line(
-            self.screen, WHITE, (BOARD_WIDTH, 0), (BOARD_WIDTH, WINDOW_HEIGHT), 2
-        )
+        pygame.draw.line(self.screen, WHITE, (BOARD_WIDTH, 0), (BOARD_WIDTH, WINDOW_HEIGHT), 2)
 
     def handle_click(self, pos: Tuple[int, int]) -> Optional[TowerType]:
         """
