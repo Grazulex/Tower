@@ -3,11 +3,12 @@ import pygame
 from pygame.surface import Surface
 from game.game_manager import GameManager
 from entities.enemy_base import EnemyBase
-from config.color import *
-from config.constants import *
+from config.color import WHITE, DARK_GRAY
+from config.constants import CELL_SIZE, BOARD_WIDTH, BOARD_HEIGHT
 from entities.tours.tour_normal import TourNormal
 from entities.tours.tour_power import TourPower
 from entities.tours.tour_slow import TourSlow
+
 
 class Grid:
     """
@@ -86,8 +87,15 @@ class Grid:
             for column in range(0, (BOARD_WIDTH // self.cell_size)):
                 if self.grid[row][column] == 0:
                     pygame.draw.rect(
-                        self.screen, DARK_GRAY,
-                        (self.cell_size * column, self.cell_size * row, self.cell_size, self.cell_size), 1
+                        self.screen,
+                        DARK_GRAY,
+                        (
+                            self.cell_size * column,
+                            self.cell_size * row,
+                            self.cell_size,
+                            self.cell_size,
+                        ),
+                        1,
                     )
 
         # Draw the towers

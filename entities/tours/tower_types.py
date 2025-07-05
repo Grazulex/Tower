@@ -4,6 +4,7 @@ from .tour_normal import TourNormal
 from .tour_power import TourPower
 from .tour_slow import TourSlow
 
+
 class TowerType(Enum):
     """
     Enum representing different types of towers in the game.
@@ -59,7 +60,7 @@ class TowerType(Enum):
         return self.tower_class(None, 0, 0).color
 
     @classmethod
-    def get_all_towers(cls) -> List['TowerType']:
+    def get_all_towers(cls) -> List["TowerType"]:
         """
         Retrieves all tower types defined in the enum.
 

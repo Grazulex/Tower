@@ -3,7 +3,7 @@ import pygame
 from pygame.surface import Surface
 from game.game_manager import GameManager
 from entities.enemy_base import EnemyBase
-from config.color import *
+from config.color import BLUE, WHITE
 from config.constants import NORMAL_ENEMY_HEALTH, NORMAL_ENEMY_POINTS
 from os.path import join
 
@@ -22,7 +22,12 @@ class EnemyNormal(EnemyBase):
         points_value (int): The points awarded for defeating the enemy.
     """
 
-    def __init__(self, screen: Surface, track_points: List[tuple[int, int]], game_manager: GameManager):
+    def __init__(
+        self,
+        screen: Surface,
+        track_points: List[tuple[int, int]],
+        game_manager: GameManager,
+    ):
         """
         Initializes an EnemyNormal instance.
 
@@ -37,7 +42,9 @@ class EnemyNormal(EnemyBase):
         self.health = NORMAL_ENEMY_HEALTH
         self.points_value = NORMAL_ENEMY_POINTS
         # Load death sound
-        self.death_sound = pygame.mixer.Sound(join('assets','sounds','crystal_bubble_medium.wav'))
+        self.death_sound = pygame.mixer.Sound(
+            join("assets", "sounds", "crystal_bubble_medium.wav")
+        )
 
     def play_death_sound(self) -> None:
         """

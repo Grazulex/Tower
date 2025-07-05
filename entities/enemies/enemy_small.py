@@ -3,10 +3,15 @@ import pygame
 from pygame.surface import Surface
 from game.game_manager import GameManager
 from entities.enemy_base import EnemyBase
-from config.constants import (ENEMY_RADIUS, ENEMY_SPEED,
-                            SMALL_ENEMY_RADIUS_MULTIPLIER, SMALL_ENEMY_HEALTH,
-                            SMALL_ENEMY_SPEED_MULTIPLIER, SMALL_ENEMY_POINTS)
-from config.color import *
+from config.constants import (
+    ENEMY_RADIUS,
+    ENEMY_SPEED,
+    SMALL_ENEMY_RADIUS_MULTIPLIER,
+    SMALL_ENEMY_HEALTH,
+    SMALL_ENEMY_SPEED_MULTIPLIER,
+    SMALL_ENEMY_POINTS,
+)
+from config.color import GREEN, WHITE
 from os.path import join
 
 
@@ -27,7 +32,12 @@ class EnemySmall(EnemyBase):
         points_value (int): The points awarded for defeating the enemy.
     """
 
-    def __init__(self, screen: Surface, track_points: List[tuple[int, int]], game_manager: GameManager):
+    def __init__(
+        self,
+        screen: Surface,
+        track_points: List[tuple[int, int]],
+        game_manager: GameManager,
+    ):
         """
         Initializes an EnemySmall instance.
 
@@ -44,7 +54,9 @@ class EnemySmall(EnemyBase):
         self.speed = ENEMY_SPEED * SMALL_ENEMY_SPEED_MULTIPLIER
         self.points_value = SMALL_ENEMY_POINTS
         # Load death sound
-        self.death_sound = pygame.mixer.Sound(join('assets','sounds','crystal_bubble_small.wav'))
+        self.death_sound = pygame.mixer.Sound(
+            join("assets", "sounds", "crystal_bubble_small.wav")
+        )
 
     def play_death_sound(self) -> None:
         """

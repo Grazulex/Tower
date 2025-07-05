@@ -1,6 +1,7 @@
 from typing import Type, Any
 from config.constants import STARTING_POINTS, STARTING_LIVES
 
+
 class GameManager:
     """
     Manages the state and progression of the game.

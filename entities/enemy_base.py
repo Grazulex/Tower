@@ -2,9 +2,10 @@ from typing import List, Tuple
 import pygame
 from pygame.surface import Surface
 from game.game_manager import GameManager
-from config.constants import *
-from config.color import *
+from config.constants import CELL_SIZE, ENEMY_RADIUS, ENEMY_SPEED, ENEMY_DAMAGED_COLOR
+from config.color import RED, BLACK
 from effects.particle import Particle
+
 
 class EnemyBase:
     """
@@ -29,7 +30,12 @@ class EnemyBase:
         reached_end (bool): Whether the enemy has reached the end of the track.
     """
 
-    def __init__(self, screen: Surface, track_points: List[Tuple[int, int]], game_manager: GameManager):
+    def __init__(
+        self,
+        screen: Surface,
+        track_points: List[Tuple[int, int]],
+        game_manager: GameManager,
+    ):
         """
         Initializes an Enemy instance.
 
@@ -75,7 +81,7 @@ class EnemyBase:
 
         dx = target_x - self.x
         dy = target_y - self.y
-        distance = (dx ** 2 + dy ** 2) ** 0.5
+        distance = (dx**2 + dy**2) ** 0.5
 
         if distance < float(self.speed):
             self.current_point_index += 1
@@ -93,42 +99,55 @@ class EnemyBase:
         Displays the enemy's health and handles particle effects when the enemy is removed.
         """
         if self.visible:
-        # Calculate color based on health
+            # Calculate color based on health
             health_ratio = max(0.0, min(1.0, float(self.health) / 100.0))
             # Transition from base color to red as health decreases
             base_color = self.color
             damaged_color = ENEMY_DAMAGED_COLOR  # Color for damaged enemies
             current_color = (
-                int(base_color[0] * health_ratio + damaged_color[0] * (1 - health_ratio)),
-                int(base_color[1] * health_ratio + damaged_color[1] * (1 - health_ratio)),
-                int(base_color[2] * health_ratio + damaged_color[2] * (1 - health_ratio))
+                int(
+                    base_color[0] * health_ratio + damaged_color[0] * (1 - health_ratio)
+                ),
+                int(
+                    base_color[1] * health_ratio + damaged_color[1] * (1 - health_ratio)
+                ),
+                int(
+                    base_color[2] * health_ratio + damaged_color[2] * (1 - health_ratio)
+                ),
             )
-            
+
             # Neon glow effect
             glow_radius = int(self.radius * 1.5)
-            
+
             # Create multiple circles for glow effect
             for r in range(int(glow_radius), int(self.radius), -1):
                 alpha = int(30 * (r / glow_radius))
                 s = pygame.Surface((r * 2, r * 2), pygame.SRCALPHA)
                 pygame.draw.circle(s, (*current_color, alpha), (r, r), r)
                 self.screen.blit(s, (int(self.x - r), int(self.y - r)))
-            
+
             # Main enemy body with neon effect
             for r in range(int(self.radius), 0, -1):
                 alpha = int(255 * (r / self.radius))
                 s = pygame.Surface((r * 2, r * 2), pygame.SRCALPHA)
                 pygame.draw.circle(s, (*current_color, alpha), (r, r), r)
                 self.screen.blit(s, (int(self.x - r), int(self.y - r)))
-            
+
             # Add glowing border
-            border_surface = pygame.Surface((int(self.radius * 2.2), int(self.radius * 2.2)), pygame.SRCALPHA)
-            pygame.draw.circle(border_surface, (*current_color, 160), 
-                             (int(self.radius * 1.1), int(self.radius * 1.1)), 
-                             int(self.radius), 2)
-            self.screen.blit(border_surface, 
-                            (int(self.x - self.radius * 1.1), 
-                             int(self.y - self.radius * 1.1)))
+            border_surface = pygame.Surface(
+                (int(self.radius * 2.2), int(self.radius * 2.2)), pygame.SRCALPHA
+            )
+            pygame.draw.circle(
+                border_surface,
+                (*current_color, 160),
+                (int(self.radius * 1.1), int(self.radius * 1.1)),
+                int(self.radius),
+                2,
+            )
+            self.screen.blit(
+                border_surface,
+                (int(self.x - self.radius * 1.1), int(self.y - self.radius * 1.1)),
+            )
 
         particles_alive = False
         for particle in self.particles[:]:

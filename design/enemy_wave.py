@@ -9,6 +9,7 @@ from entities.enemies.enemy_big import EnemyBig
 from entities.enemies.enemy_small import EnemySmall
 from entities.enemies.enemy_slow import EnemySlow
 
+
 class EnemyWave:
     """
     Represents a wave of enemies in the game.
@@ -24,7 +25,14 @@ class EnemyWave:
         last_spawn_time (int): The time (in milliseconds) when the last enemy was spawned.
     """
 
-    def __init__(self, screen: Surface, track_points: List[Tuple[int, int]], num_enemies: int, spawn_delay: int, game_manager: GameManager):
+    def __init__(
+        self,
+        screen: Surface,
+        track_points: List[Tuple[int, int]],
+        num_enemies: int,
+        spawn_delay: int,
+        game_manager: GameManager,
+    ):
         """
         Initializes the EnemyWave instance.
 
@@ -54,8 +62,10 @@ class EnemyWave:
         """
         current_time = pygame.time.get_ticks()
 
-        if (self.enemies_spawned < self.num_enemies and
-            current_time - self.last_spawn_time >= self.spawn_delay):
+        if (
+            self.enemies_spawned < self.num_enemies
+            and current_time - self.last_spawn_time >= self.spawn_delay
+        ):
             enemy_class = random.choice([EnemyNormal, EnemyBig, EnemySmall, EnemySlow])
             enemy = enemy_class(self.screen, self.track_points, self.game_manager)
             self.enemies.append(enemy)

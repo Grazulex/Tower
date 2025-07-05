@@ -3,7 +3,7 @@ STARTING_POINTS = 300
 STARTING_LIVES = 20
 
 # Window and Display Settings
-TITLE = 'Tower Defense'  # Title of the game window
+TITLE = "Tower Defense"  # Title of the game window
 CELL_SIZE = 20  # Size of each grid cell in pixels
 
 # Board Dimensions

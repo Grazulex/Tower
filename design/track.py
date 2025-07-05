@@ -1,8 +1,9 @@
 from typing import List, Tuple
 import pygame
 from pygame.surface import Surface
-from config.color import *
-from config.constants import *
+from config.color import YELLOW
+from config.constants import TRACK_WIDTH, CELL_SIZE, BOARD_WIDTH, BOARD_HEIGHT
+
 
 class Track:
     """
@@ -40,6 +41,7 @@ class Track:
         The track is stored as a list of tuples representing grid positions.
         """
         import random
+
         row = (BOARD_HEIGHT // CELL_SIZE) // 2
         col = 0
         self.track = [(row, col)]
@@ -49,9 +51,9 @@ class Track:
             if row > 0 and (row - 1, col) not in visited:
                 moves.append((-1, 0))  # Move up
             if row < (BOARD_HEIGHT // CELL_SIZE) - 1 and (row + 1, col) not in visited:
-                moves.append((1, 0))   # Move down
+                moves.append((1, 0))  # Move down
             if (row, col + 1) not in visited:
-                moves.append((0, 1))   # Move right
+                moves.append((0, 1))  # Move right
             if not moves:
                 break
             move = random.choice(moves)
@@ -67,8 +69,13 @@ class Track:
         The track is drawn as a series of connected lines between the track points.
         """
         if len(self.track) > 1:
-            points = [(col * CELL_SIZE + CELL_SIZE // 2, row * CELL_SIZE + CELL_SIZE // 2) for row, col in self.track]
-            pygame.draw.lines(self.screen, self.track_color, False, points, self.line_width)
+            points = [
+                (col * CELL_SIZE + CELL_SIZE // 2, row * CELL_SIZE + CELL_SIZE // 2)
+                for row, col in self.track
+            ]
+            pygame.draw.lines(
+                self.screen, self.track_color, False, points, self.line_width
+            )
 
     def get_track(self) -> List[Tuple[int, int]]:
         """

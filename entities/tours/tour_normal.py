@@ -2,10 +2,15 @@ from typing import Optional
 import pygame
 from pygame.surface import Surface
 from entities.tour_base import TourBase
-from config.color import *
-from config.constants import (NORMAL_TOWER_RANGE, NORMAL_TOWER_ATTACK_SPEED,
-                           NORMAL_TOWER_DAMAGE, NORMAL_TOWER_COST)
+from config.color import BLUE
+from config.constants import (
+    NORMAL_TOWER_RANGE,
+    NORMAL_TOWER_ATTACK_SPEED,
+    NORMAL_TOWER_DAMAGE,
+    NORMAL_TOWER_COST,
+)
 from os.path import join
+
 
 class TourNormal(TourBase):
     """
@@ -35,8 +40,10 @@ class TourNormal(TourBase):
         self.cost = NORMAL_TOWER_COST
         # Only load sound if screen is defined (not during type initialization)
         if screen is not None:
-            self.attack_sound = pygame.mixer.Sound(join('assets','sounds','crystal_laser_medium.wav'))
+            self.attack_sound = pygame.mixer.Sound(
+                join("assets", "sounds", "crystal_laser_medium.wav")
+            )
 
     def play_attack_sound(self) -> None:
-        if hasattr(self, 'attack_sound'):
+        if hasattr(self, "attack_sound"):
             self.attack_sound.play()
