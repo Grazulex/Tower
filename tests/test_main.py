@@ -221,18 +221,15 @@ def test_handle_tower_placement(screen):
     assert game_manager.get_points() == initial_points
 
 
-def test_handle_wave_completion(screen):
+def test_handle_wave_completion(screen, mock_sound):
     """Test wave completion handling."""
     from tower.main import handle_wave_completion
-    import pygame.mixer
-
-    pygame.mixer.init()
 
     # Initialize components
     game_manager = GameManager()
     grid = grid_module.Grid(screen)
     track = track_module.Track(screen)
-    wave_complete_sound = pygame.mixer.Sound(buffer=bytearray([1, 2, 3, 4]))  # Dummy sound
+    wave_complete_sound = mock_sound  # Utiliser le mock_sound fixture
 
     # Set initial state
     initial_wave = game_manager.get_current_wave()
