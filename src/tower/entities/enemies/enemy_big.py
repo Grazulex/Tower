@@ -1,6 +1,6 @@
 import pygame
-from entities.enemy_base import EnemyBase
-from config.constants import (
+from tower.entities.enemy_base import EnemyBase
+from tower.config.constants import (
     ENEMY_RADIUS,
     ENEMY_SPEED,
     BIG_ENEMY_RADIUS_MULTIPLIER,
@@ -8,7 +8,7 @@ from config.constants import (
     BIG_ENEMY_SPEED_MULTIPLIER,
     BIG_ENEMY_POINTS,
 )
-from config.color import YELLOW
+from tower.config.color import YELLOW
 from os.path import join
 from dataclasses import dataclass, field
 
@@ -30,4 +30,7 @@ class EnemyBig(EnemyBase):
         """
         super().__post_init__()
         # Load death sound
-        self.death_sound = pygame.mixer.Sound(join("assets", "sounds", "crystal_bubble_large.wav"))
+        from tower import __file__ as tower_init
+        from os.path import dirname
+        base_path = dirname(tower_init)
+        self.death_sound = pygame.mixer.Sound(join(base_path, "assets", "sounds", "crystal_bubble_large.wav"))

@@ -24,7 +24,7 @@ import pygame
 import random
 from sys import exit
 from typing import List, Tuple
-from config.constants import (
+from tower.config.constants import (
     BOARD_WIDTH,
     BOARD_HEIGHT,
     CELL_SIZE,
@@ -32,13 +32,13 @@ from config.constants import (
     WINDOW_HEIGHT,
     TITLE,
 )
-from config.color import WHITE, BLACK
-import design.grid as grid_module
-import design.track as track_module
-from design.enemy_wave import EnemyWave
-from ui.game_ui import GameUI
-from game.game_manager import GameManager
-from game.game_state import GameState
+from tower.config.color import WHITE, BLACK
+import tower.design.grid as grid_module
+import tower.design.track as track_module
+from tower.design.enemy_wave import EnemyWave
+from tower.ui.game_ui import GameUI
+from tower.game.game_manager import GameManager
+from tower.game.game_state import GameState
 from os.path import join
 from pygame.surface import Surface
 
@@ -98,9 +98,12 @@ def run() -> None:
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))  # Create the game window
 
     # Load sounds
-    wave_complete_sound = pygame.mixer.Sound(join("assets", "musics", "win_zen_crystal_melody.wav"))
-    menu_music = pygame.mixer.Sound(join("assets", "musics", "zen_menu_loop.wav"))
-    game_over_music = pygame.mixer.Sound(join("assets", "musics", "zen_death_melody.wav"))
+    from tower import __file__ as tower_init
+    from os.path import dirname
+    base_path = dirname(tower_init)
+    wave_complete_sound = pygame.mixer.Sound(join(base_path, "assets", "musics", "win_zen_crystal_melody.wav"))
+    menu_music = pygame.mixer.Sound(join(base_path, "assets", "musics", "zen_menu_loop.wav"))
+    game_over_music = pygame.mixer.Sound(join(base_path, "assets", "musics", "zen_death_melody.wav"))
 
     menu_channel = pygame.mixer.Channel(0)
     menu_channel.play(menu_music, loops=-1)

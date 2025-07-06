@@ -38,7 +38,7 @@ uv update
 uv lock
 
 # Run a Python script
-uv run main.py
+uv run tower
 ```
 
 ### Ruff
@@ -55,10 +55,10 @@ Key features:
 Usage:
 ```bash 
 # Run linter
-uv tool run ruff check .
+uv tool run ruff check ./src
 
 # Format code
-uv tool run ruff format .
+uv tool run ruff format ./src
 ```
 
 ## Getting Started
@@ -70,7 +70,7 @@ uv tool run ruff format .
    ```
 3. Run the game:
    ```bash
-   uv run main.py
+   uv run tower
    ```
 
 ## Contributing
@@ -78,9 +78,9 @@ uv tool run ruff format .
 Before submitting changes:
 1. Format your code using Ruff:
    ```bash
-   uv tool run ruff format .
+   uv tool run ruff format ./src
    ```
 2. Run the linter:
    ```bash
-   ruff tool run ruff check .
+   ruff tool run ruff check ./src
    ```

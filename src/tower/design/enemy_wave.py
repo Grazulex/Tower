@@ -2,12 +2,12 @@ from typing import List, Tuple
 import pygame
 import random
 from pygame.surface import Surface
-from game.game_manager import GameManager
-from entities.enemy_base import EnemyBase
-from entities.enemies.enemy_normal import EnemyNormal
-from entities.enemies.enemy_big import EnemyBig
-from entities.enemies.enemy_small import EnemySmall
-from entities.enemies.enemy_slow import EnemySlow
+from tower.game.game_manager import GameManager
+from tower.entities.enemy_base import EnemyBase
+from tower.entities.enemies.enemy_normal import EnemyNormal
+from tower.entities.enemies.enemy_big import EnemyBig
+from tower.entities.enemies.enemy_small import EnemySmall
+from tower.entities.enemies.enemy_slow import EnemySlow
 
 
 class EnemyWave:

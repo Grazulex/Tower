@@ -1,13 +1,13 @@
 from typing import List
 import pygame
 from pygame.surface import Surface
-from game.game_manager import GameManager
-from entities.enemy_base import EnemyBase
-from config.color import WHITE, DARK_GRAY
-from config.constants import CELL_SIZE, BOARD_WIDTH, BOARD_HEIGHT
-from entities.tours.tour_normal import TourNormal
-from entities.tours.tour_power import TourPower
-from entities.tours.tour_slow import TourSlow
+from tower.game.game_manager import GameManager
+from tower.entities.enemy_base import EnemyBase
+from tower.config.color import WHITE, DARK_GRAY
+from tower.config.constants import CELL_SIZE, BOARD_WIDTH, BOARD_HEIGHT
+from tower.entities.tours.tour_normal import TourNormal
+from tower.entities.tours.tour_power import TourPower
+from tower.entities.tours.tour_slow import TourSlow
 
 
 class Grid:

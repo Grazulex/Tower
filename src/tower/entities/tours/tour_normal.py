@@ -1,7 +1,7 @@
 import pygame
-from entities.tour_base import TourBase
-from config.color import BLUE
-from config.constants import (
+from tower.entities.tour_base import TourBase
+from tower.config.color import BLUE
+from tower.config.constants import (
     NORMAL_TOWER_RANGE,
     NORMAL_TOWER_ATTACK_SPEED,
     NORMAL_TOWER_DAMAGE,
@@ -24,4 +24,7 @@ class TourNormal(TourBase):
         super().__init__(self.screen, self.column, self.row)
         # Only load sound if screen is defined (not during type initialization)
         if self.screen is not None:
-            self.attack_sound = pygame.mixer.Sound(join("assets", "sounds", "crystal_laser_medium.wav"))
+            from tower import __file__ as tower_init
+            from os.path import dirname
+            base_path = dirname(tower_init)
+            self.attack_sound = pygame.mixer.Sound(join(base_path, "assets", "sounds", "crystal_laser_medium.wav"))

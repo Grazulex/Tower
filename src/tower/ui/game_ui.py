@@ -1,11 +1,11 @@
 from typing import Tuple, Optional
 import pygame
 from pygame.surface import Surface
-from config.color import WHITE, RED, YELLOW, GREEN
-from config.constants import BOARD_WIDTH, WINDOW_WIDTH, WINDOW_HEIGHT, CELL_SIZE
-from entities.tours.tower_types import TowerType
-from design.enemy_wave import EnemyWave
-from game.game_manager import GameManager
+from tower.config.color import WHITE, RED, YELLOW, GREEN
+from tower.config.constants import BOARD_WIDTH, WINDOW_WIDTH, WINDOW_HEIGHT, CELL_SIZE
+from tower.entities.tours.tower_types import TowerType
+from tower.design.enemy_wave import EnemyWave
+from tower.game.game_manager import GameManager
 
 
 class GameUI:

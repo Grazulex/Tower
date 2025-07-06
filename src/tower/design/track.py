@@ -1,8 +1,8 @@
 from typing import List, Tuple
 import pygame
 from pygame.surface import Surface
-from config.color import YELLOW
-from config.constants import TRACK_WIDTH, CELL_SIZE, BOARD_WIDTH, BOARD_HEIGHT
+from tower.config.color import YELLOW
+from tower.config.constants import TRACK_WIDTH, CELL_SIZE, BOARD_WIDTH, BOARD_HEIGHT
 
 
 class Track:

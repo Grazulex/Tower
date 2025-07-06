@@ -1,5 +1,5 @@
 from typing import Type, Any
-from config.constants import STARTING_POINTS, STARTING_LIVES
+from tower.config.constants import STARTING_POINTS, STARTING_LIVES
 
 
 class GameManager:

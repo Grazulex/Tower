@@ -5,7 +5,7 @@ This module defines different game states and manages transitions between them.
 """
 
 from typing import Literal
-from game.save_manager import save_high_score, load_high_score
+from tower.game.save_manager import save_high_score, load_high_score
 
 GameStateType = Literal["menu", "playing", "game_over"]
 

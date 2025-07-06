@@ -2,7 +2,7 @@ from typing import Tuple
 import pygame
 from pygame.surface import Surface
 import random
-from config.constants import (
+from tower.config.constants import (
     PARTICLE_COLOR_VARIATION,
     PARTICLE_SIZE_MIN,
     PARTICLE_SIZE_MAX,

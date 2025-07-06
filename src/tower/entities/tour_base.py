@@ -1,9 +1,9 @@
 from typing import List
 import pygame
 from pygame.surface import Surface
-from game.game_manager import GameManager
-from entities.enemy_base import EnemyBase
-from config.constants import (
+from tower.game.game_manager import GameManager
+from tower.entities.enemy_base import EnemyBase
+from tower.config.constants import (
     ATTACK_DURATION,
     CELL_SIZE,
     RANGE_CIRCLES_COUNT,
@@ -12,7 +12,7 @@ from config.constants import (
     RANGE_COLOR_INTENSITY,
     RANGE_GLOW_ALPHA,
 )
-from config.color import GREEN, WHITE, RED
+from tower.config.color import GREEN, WHITE, RED
 from dataclasses import dataclass, field
 
 

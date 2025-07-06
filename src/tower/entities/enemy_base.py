@@ -1,10 +1,10 @@
 from typing import List, Tuple
 import pygame
 from pygame.surface import Surface
-from game.game_manager import GameManager
-from config.constants import CELL_SIZE, ENEMY_RADIUS, ENEMY_SPEED, ENEMY_DAMAGED_COLOR
-from config.color import RED, BLACK
-from effects.particle import Particle
+from tower.game.game_manager import GameManager
+from tower.config.constants import CELL_SIZE, ENEMY_RADIUS, ENEMY_SPEED, ENEMY_DAMAGED_COLOR
+from tower.config.color import RED, BLACK
+from tower.effects.particle import Particle
 from dataclasses import dataclass, field
 
 
