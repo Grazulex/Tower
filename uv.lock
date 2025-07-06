@@ -153,6 +153,20 @@ wheels = [
 ]
 
 [[package]]
+name = "pygame-menu"
+version = "4.5.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pygame" },
+    { name = "pyperclip" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/cb/d2/cb148c025b21bb28b4fb64046a9a2e55e670abfb07c60cc9e6740bd8ac52/pygame_menu-4.5.2.tar.gz", hash = "sha256:0397891198f5335bf146cf366a0da90c898fe75a4c5ad1d65fc47ec7c7b40164", size = 1314112, upload-time = "2025-03-24T02:49:21.149Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f7/8b/0dda4594c668d07ca5798060ff43909b00e0d29c59fa14f5da1903886c8f/pygame_menu-4.5.2-py3-none-any.whl", hash = "sha256:69f036a48a2d42a820503311f40bdac294e06da21a21eb32ee95ed09e52b5bfe", size = 1381506, upload-time = "2025-03-24T02:49:19.646Z" },
+]
+
+[[package]]
 name = "pygments"
 version = "2.19.2"
 source = { registry = "https://pypi.org/simple" }
@@ -160,6 +174,12 @@ sdist = { url = "https://files.pythonhosted.org/packages/b0/77/a5b8c569bf593b014
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c7/21/705964c7812476f378728bdf590ca4b771ec72385c533964653c68e86bdc/pygments-2.19.2-py3-none-any.whl", hash = "sha256:86540386c03d588bb81d44bc3928634ff26449851e99741617ecb9037ee5ec0b", size = 1225217, upload-time = "2025-06-21T13:39:07.939Z" },
 ]
+
+[[package]]
+name = "pyperclip"
+version = "1.9.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/30/23/2f0a3efc4d6a32f3b63cdff36cd398d9701d26cda58e3ab97ac79fb5e60d/pyperclip-1.9.0.tar.gz", hash = "sha256:b7de0142ddc81bfc5c7507eea19da920b92252b548b96186caf94a5e2527d310", size = 20961, upload-time = "2024-06-18T20:38:48.401Z" }
 
 [[package]]
 name = "pytest"
@@ -223,6 +243,7 @@ source = { editable = "." }
 dependencies = [
     { name = "bcrypt" },
     { name = "pygame" },
+    { name = "pygame-menu" },
 ]
 
 [package.dev-dependencies]
@@ -236,6 +257,7 @@ dev = [
 requires-dist = [
     { name = "bcrypt", specifier = ">=4.3.0" },
     { name = "pygame", specifier = ">=2.6.1" },
+    { name = "pygame-menu", specifier = ">=4.5.2" },
 ]
 
 [package.metadata.requires-dev]
@@ -243,4 +265,13 @@ dev = [
     { name = "pytest", specifier = ">=8.4.1" },
     { name = "pytest-cov", specifier = ">=6.2.1" },
     { name = "ruff", specifier = ">=0.12.2" },
+]
+
+[[package]]
+name = "typing-extensions"
+version = "4.14.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/98/5a/da40306b885cc8c09109dc2e1abd358d5684b1425678151cdaed4731c822/typing_extensions-4.14.1.tar.gz", hash = "sha256:38b39f4aeeab64884ce9f74c94263ef78f3c22467c8724005483154c26648d36", size = 107673, upload-time = "2025-07-04T13:28:34.16Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b5/00/d631e67a838026495268c2f6884f3711a15a9a2a96cd244fdaea53b823fb/typing_extensions-4.14.1-py3-none-any.whl", hash = "sha256:d1e1e3b58374dc93031d6eda2420a48ea44a36c2b4766a4fdeb3710755731d76", size = 43906, upload-time = "2025-07-04T13:28:32.743Z" },
 ]
