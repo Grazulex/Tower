@@ -32,7 +32,7 @@ jobs:
               if: always()
               uses: pmeier/pytest-results-action@main
               with:
-                path: test-results.xml
+                path: pytest.xml
                 summary: true
                 display-options: fEX
                 fail-on-empty: true
