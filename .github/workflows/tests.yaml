@@ -26,14 +26,19 @@ jobs:
               run: uv sync --locked --all-extras --dev
 
             - name: Run tests
-              run: uv run pytest --junit-xml=test-results.xml --cov=src --cov-report=xml
+              run: uv run pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=app tests/ | tee pytest-coverage.txt
 
             - name: Surface failing tests
-              if: always()
               uses: pmeier/pytest-results-action@main
               with:
-                path: test-results.xml
+                path: pytest.xml
                 summary: true
                 display-options: fEX
                 fail-on-empty: true
-                title: Test results              
+                title: Test results    
+                
+            - name: Pytest coverage comment
+              uses: MishaKav/pytest-coverage-comment@main
+              with:
+                pytest-coverage-path: ./pytest-coverage.txt
+                junitxml-path: ./pytest.xml
