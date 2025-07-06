@@ -61,6 +61,23 @@ uv tool run ruff check ./src
 uv tool run ruff format ./src
 ```
 
+### Hatchling
+Hatchling is a modern build backend for Python projects, providing a simple way to manage project metadata, dependencies, and packaging.
+It supports pyproject.toml for configuration and is designed to work seamlessly with modern Python packaging standards.
+
+### Pytest
+Pytest is a powerful testing framework for Python, allowing for simple unit tests as well as complex
+functional testing. It supports fixtures, parameterized testing, and has a rich ecosystem of plugins.
+
+```bash
+# Run tests
+uv run pytest
+# Run tests with coverage
+uv run pytest --cov=src --cov-report=html
+```
+
+
+
 ## Getting Started
 
 1. Clone the repository
