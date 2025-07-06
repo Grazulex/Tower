@@ -44,7 +44,7 @@ jobs:
               run: |
                 echo "Coverage Percentage - ${{ steps.coverageComment.outputs.coverage }}"
                 echo "Coverage Color - ${{ steps.coverageComment.outputs.color }}"
-                echo "Summary Report - ${{ steps.coverageComment.outputs.summaryReport }}"
+                echo "Coverage Html - ${{ steps.coverageComment.outputs.coverageHtml }}"
               
                 echo "Coverage Warnings - ${{ steps.coverageComment.outputs.warnings }}"
               
