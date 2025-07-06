@@ -63,6 +63,9 @@ class EnemyBase:
         self.x = start_col * CELL_SIZE + CELL_SIZE // 2
         self.y = start_row * CELL_SIZE + CELL_SIZE // 2
 
+        # Initialize death_sound to None by default
+        self.death_sound = None
+
     def move(self) -> None:
         """
         Moves the enemy along the track.

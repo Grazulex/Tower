@@ -27,6 +27,7 @@ class TourPower(TourBase):
             try:
                 from tower import __file__ as tower_init
                 from os.path import dirname
+
                 base_path = dirname(tower_init)
                 self.attack_sound = pygame.mixer.Sound(join(base_path, "assets", "sounds", "crystal_laser_short.wav"))
             except (pygame.error, ImportError):

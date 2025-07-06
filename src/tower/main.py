@@ -100,6 +100,7 @@ def run() -> None:
     # Load sounds
     from tower import __file__ as tower_init
     from os.path import dirname
+
     base_path = dirname(tower_init)
     wave_complete_sound = pygame.mixer.Sound(join(base_path, "assets", "musics", "win_zen_crystal_melody.wav"))
     menu_music = pygame.mixer.Sound(join(base_path, "assets", "musics", "zen_menu_loop.wav"))

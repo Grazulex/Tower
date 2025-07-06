@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 import pygame
 from pygame.surface import Surface
 from tower.game.game_manager import GameManager
@@ -33,7 +33,7 @@ class TourBase:
     font: pygame.font.Font = field(default_factory=lambda: pygame.font.SysFont(None, 12), init=False)
     is_attacking: bool = field(default=False, init=False)
     attack_animation_duration: int = field(default=ATTACK_DURATION, init=False)
-    current_target: EnemyBase = field(default=EnemyBase, init=False)
+    current_target: Optional[EnemyBase] = field(default=None, init=False)
     """
     Represents a defensive tower in the game.
     
@@ -194,6 +194,8 @@ class TourBase:
                     enemies_in_range.append(enemy)
 
             if enemies_in_range:
+                # Set is_attacking to True if any enemy is in range
+                self.is_attacking = True
                 current_time = pygame.time.get_ticks()
 
                 # Filter valid enemies (alive and visible)
