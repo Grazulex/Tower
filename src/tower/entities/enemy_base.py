@@ -172,9 +172,13 @@ class EnemyBase:
             self.remove()
 
     def play_death_sound(self) -> None:
-        """Plays the enemy's death sound if one is defined"""
-        if hasattr(self, "death_sound"):
-            self.death_sound.play()
+        """Plays the enemy's death sound if one is defined and audio is available"""
+        try:
+            if hasattr(self, "death_sound"):
+                self.death_sound.play()
+        except (pygame.error, AttributeError):
+            # Skip playing sound if audio is not available
+            pass
 
     def remove(self) -> None:
         """

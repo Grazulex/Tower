@@ -57,9 +57,13 @@ class TourBase:
     """
 
     def play_attack_sound(self) -> None:
-        """Plays the tower's attack sound if one is defined"""
-        if hasattr(self, "attack_sound"):
-            self.attack_sound.play()
+        """Plays the tower's attack sound if one is defined and audio is available"""
+        try:
+            if hasattr(self, "attack_sound"):
+                self.attack_sound.play()
+        except (pygame.error, AttributeError):
+            # Skip playing sound if audio is not available
+            pass
 
     def draw(self, enemies: List[EnemyBase], game_manager: GameManager) -> None:
         """
