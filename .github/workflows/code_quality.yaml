@@ -1,4 +1,4 @@
-name: Example
+name: Ruff Code Quality Check
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
             - name: Install uv
               uses: astral-sh/setup-uv@v5
 
-            - name: "Set up Python"
+            - name: Set up Python
               uses: actions/setup-python@v5
               with:
                 python-version-file: "pyproject.toml"
@@ -25,5 +25,5 @@ jobs:
             - name: Install the project
               run: uv sync --locked --all-extras --dev
 
-            - name: "Check code quality"
+            - name: Check code quality
               uses: astral-sh/ruff-action@v2
