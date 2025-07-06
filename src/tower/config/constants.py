@@ -13,6 +13,10 @@ UI_WIDTH = 150  # Width of the user interface area in pixels
 WINDOW_WIDTH = BOARD_WIDTH + UI_WIDTH  # Total width of the game window
 WINDOW_HEIGHT = BOARD_HEIGHT  # Total height of the game window
 
+# Grid Dimensions
+GRID_WIDTH = BOARD_WIDTH // CELL_SIZE  # Number of grid columns
+GRID_HEIGHT = BOARD_HEIGHT // CELL_SIZE  # Number of grid rows
+
 # Game Track Settings
 TRACK_WIDTH = 2  # Width of the enemy path in grid cells
 

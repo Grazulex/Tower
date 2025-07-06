@@ -84,18 +84,167 @@ def create_enemy_wave(
     )
 
 
+def initialize_game(
+    screen: Surface,
+) -> tuple[GameState, GameUI, GameManager, grid_module.Grid, track_module.Track, EnemyWave]:
+    """Initialize game components.
+
+    Args:
+        screen: The game screen surface
+
+    Returns:
+        tuple containing initialized game components:
+        - game_state: The game state instance
+        - game_ui: The game UI instance
+        - game_manager: The game manager instance
+        - grid: The game grid instance
+        - track: The game track instance
+        - enemy_wave: The initial enemy wave
+    """
+    game_state = GameState()
+    game_ui = GameUI(screen)
+    game_manager = GameManager()
+
+    grid = grid_module.Grid(screen)
+    track = track_module.Track(screen)
+    track.generate_random_track()
+    track_data = track.get_track()
+
+    enemy_wave = create_enemy_wave(screen, track_data, game_manager)
+
+    return game_state, game_ui, game_manager, grid, track, enemy_wave
+
+
+def handle_tower_placement(
+    pos: tuple[int, int],
+    game_ui: GameUI,
+    game_manager: GameManager,
+    grid: grid_module.Grid,
+    track_data: list[tuple[int, int]],
+) -> None:
+    """Handle tower placement logic.
+
+    Args:
+        pos: Mouse position (x, y)
+        game_ui: The game UI instance
+        game_manager: The game manager instance
+        grid: The game grid instance
+        track_data: List of track points
+    """
+    if (
+        not any(button[0].collidepoint(pos) for button in game_ui.tower_buttons)
+        and game_ui.get_selected_tower() is not None
+    ):
+        column = pos[0] // CELL_SIZE
+        row = pos[1] // CELL_SIZE
+
+        if 0 <= row < GRID_HEIGHT and 0 <= column < GRID_WIDTH:
+            if (row, column) not in track_data and grid.get_grid()[row][column] == 0:
+                tower_type = game_ui.get_selected_tower()
+                if game_manager.buy_tower(tower_type.tower_class):
+                    grid.add_tower(row, column, tower_type.grid_type)
+
+
+def handle_wave_completion(
+    screen: Surface,
+    game_manager: GameManager,
+    grid: grid_module.Grid,
+    track: track_module.Track,
+    wave_complete_sound: pygame.mixer.Sound,
+) -> tuple[EnemyWave, grid_module.Grid, track_module.Track, list[tuple[int, int]]]:
+    """
+    Handle wave completion logic.
+
+    Args:
+        screen: The game screen surface
+        game_manager: The game manager instance
+        grid: The game grid instance
+        track: The game track instance
+        wave_complete_sound: The wave completion sound effect
+
+    Returns:
+        tuple containing:
+        - new enemy wave
+        - new grid
+        - new track
+        - new track data
+    """
+    game_manager.set_wave_completed(True)
+    wave_complete_sound.play()
+    pygame.time.wait(3000)
+
+    # Créer une nouvelle grille vide et un nouveau chemin
+    new_grid = grid_module.Grid(screen)
+    new_track = track_module.Track(screen)
+    new_track.generate_random_track()
+    new_track_data = new_track.get_track()
+
+    game_manager.next_wave()
+    game_manager.add_points(game_manager.get_lives() * 10)
+
+    enemy_wave = create_enemy_wave(screen, new_track_data, game_manager, is_new_wave=True)
+    return enemy_wave, new_grid, new_track, new_track_data
+
+
+def render_menu_screen(screen: Surface, game_state: GameState) -> None:
+    """Render the menu screen.
+
+    Args:
+        screen: The game screen surface
+        game_state: The game state instance
+    """
+    screen.fill(BLACK)
+    font = pygame.font.Font(None, 74)
+    text = font.render("Welcome to the game!", True, WHITE)
+    screen.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, WINDOW_HEIGHT // 3))
+
+    play_text = font.render("Press Enter to start", True, WHITE)
+    screen.blit(
+        play_text,
+        (WINDOW_WIDTH // 2 - play_text.get_width() // 2, WINDOW_HEIGHT // 2),
+    )
+    pygame.display.flip()
+
+
+def render_game_screen(
+    screen: Surface,
+    game_state: GameState,
+    game_manager: GameManager,
+    game_ui: GameUI,
+    grid: grid_module.Grid,
+    track: track_module.Track,
+    enemy_wave: EnemyWave,
+) -> None:
+    """Render the main game screen.
+
+    Args:
+        screen: The game screen surface
+        game_state: The game state instance
+        game_manager: The game manager instance
+        game_ui: The game UI instance
+        grid: The game grid instance
+        track: The game track instance
+        enemy_wave: The current enemy wave
+    """
+    screen.fill(BLACK)
+    grid.draw(enemy_wave.get_enemies(), game_manager)
+    track.draw()
+
+    game_ui.draw_points(game_manager.get_points())
+    game_ui.draw_lives(game_manager.get_lives())
+    game_ui.draw_high_score(game_state.get_high_score())
+    game_ui.draw_tower_buttons(game_manager.get_points())
+    game_ui.draw_enemy_info(enemy_wave, game_manager)
+
+    if game_ui.get_selected_tower() is not None:
+        game_ui.draw_preview(pygame.mouse.get_pos())
+
+
 def run() -> None:
-    """
-    Initializes and runs the main game loop.
-
-    Sets up the game window, initializes game components, and handles user input,
-    game logic, and rendering.
-
-    The game loop continues until the user quits or the game ends.
-    """
+    """Initialize and run the main game loop."""
     pygame.init()
     pygame.mixer.init()
-    screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))  # Create the game window
+    screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
     # Load sounds
     from tower import __file__ as tower_init
@@ -108,173 +257,74 @@ def run() -> None:
 
     menu_channel = pygame.mixer.Channel(0)
     menu_channel.play(menu_music, loops=-1)
-    pygame.display.set_caption(TITLE)  # Set the window title
-    clock = pygame.time.Clock()  # Initialize the game clock
-
-    # Initialize game state
-    game_state = GameState()
+    pygame.display.set_caption(TITLE)
+    clock = pygame.time.Clock()
 
     # Initialize game components
-    grid = grid_module.Grid(screen)
-    grid_data = grid.get_grid()
-
-    game_ui = GameUI(screen)
-    game_manager = GameManager()
-
-    track = track_module.Track(screen)
-    track.generate_random_track()
+    game_state, game_ui, game_manager, grid, track, enemy_wave = initialize_game(screen)
     track_data = track.get_track()
 
-    enemy_wave = create_enemy_wave(screen, track_data, game_manager)
-
-    # Welcome screen loop
-    while game_state.get_state() == GameState.MENU:
-        screen.fill(BLACK)
-
-        # Display welcome message
-        font = pygame.font.Font(None, 74)
-        text = font.render("Welcome to the game!", True, WHITE)
-        screen.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, WINDOW_HEIGHT // 3))
-
-        play_text = font.render("Press Enter to start", True, WHITE)
-        screen.blit(
-            play_text,
-            (WINDOW_WIDTH // 2 - play_text.get_width() // 2, WINDOW_HEIGHT // 2),
-        )
-
-        pygame.display.flip()
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                game_state.set_state("playing")
-                # Stop menu music
-                menu_channel.stop()
-                # Reset the GameManager
-                game_manager.reset_game()
-                grid = grid_module.Grid(screen)
-                grid_data = grid.get_grid()
-                track = track_module.Track(screen)
-                track.generate_random_track()
-                track_data = track.get_track()
-                enemy_wave = create_enemy_wave(screen, track_data, game_manager)
-
-    # Main game loop
+    # Game loop
     while True:
-        # Event handling
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:  # Quit event
-                pygame.quit()
-                exit()
-            elif event.type == pygame.MOUSEBUTTONDOWN:  # Mouse click event
-                pos = pygame.mouse.get_pos()
+        if game_state.get_state() == GameState.MENU:
+            render_menu_screen(screen, game_state)
 
-                # Handle UI button clicks
-                game_ui.handle_click(pos)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                    menu_channel.stop()
+                    game_state.set_state("playing")
 
-                # Handle tower placement
-                if (
-                    not any(button[0].collidepoint(pos) for button in game_ui.tower_buttons)
-                    and game_ui.get_selected_tower() is not None
-                ):
-                    column = pos[0] // CELL_SIZE
-                    row = pos[1] // CELL_SIZE
+        elif game_state.get_state() == GameState.PLAYING:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    pos = pygame.mouse.get_pos()
+                    game_ui.handle_click(pos)
+                    handle_tower_placement(pos, game_ui, game_manager, grid, track_data)
 
-                    if 0 <= row < GRID_HEIGHT and 0 <= column < GRID_WIDTH:
-                        # Check if the cell is valid for tower placement
-                        if (row, column) not in track_data and grid_data[row][column] == 0:
-                            tower_type = game_ui.get_selected_tower()
-                            if game_manager.buy_tower(
-                                tower_type.tower_class
-                            ):  # Check if the player can afford the tower
-                                grid.add_tower(row, column, tower_type.grid_type)
-                            grid_data = grid.get_grid()
+            render_game_screen(screen, game_state, game_manager, game_ui, grid, track, enemy_wave)
+            enemy_wave.update()
 
-        # Game rendering
-        screen.fill(BLACK)  # Clear the screen
-        grid.draw(enemy_wave.get_enemies(), game_manager)  # Draw the grid and towers
-        track.draw()  # Draw the track
+            if game_manager.is_game_over():
+                if game_state.update_high_score(game_manager.get_points()):
+                    print("New high score!")
+                game_state.set_state("game_over")
+                game_over_music.play()
 
-        # Draw UI elements
-        game_ui.draw_points(game_manager.get_points())
-        game_ui.draw_lives(game_manager.get_lives())
-        game_ui.draw_high_score(game_state.get_high_score())
-        game_ui.draw_tower_buttons(game_manager.get_points())
-        game_ui.draw_enemy_info(enemy_wave, game_manager)
+            elif enemy_wave.is_wave_complete():
+                enemy_wave, grid, track, track_data = handle_wave_completion(
+                    screen, game_manager, grid, track, wave_complete_sound
+                )
 
-        # Check for game over
-        if game_manager.is_game_over():
-            # Update high score
-            if game_state.update_high_score(game_manager.get_points()):
-                print("New high score!")
-            game_state.set_state("game_over")
-            # Play game over music
-            game_over_music.play()
+        elif game_state.get_state() == GameState.GAME_OVER:
+            screen.fill(BLACK)
+            game_ui.draw_game_over(game_manager)
 
-            # Game over screen loop
-            while game_state.get_state() == GameState.GAME_OVER:
-                screen.fill(BLACK)
-                game_ui.draw_game_over(game_manager)
+            font = pygame.font.Font(None, 36)
+            text = font.render("Press Enter to return to the menu", True, WHITE)
+            text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT - 100))
+            screen.blit(text, text_rect)
+            pygame.display.flip()
 
-                # Add instruction text
-                font = pygame.font.Font(None, 36)
-                text = font.render("Press Enter to return to the menu", True, WHITE)
-                text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT - 100))
-                screen.blit(text, text_rect)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                    game_over_music.stop()
+                    menu_channel.stop()
+                    # Réinitialiser complètement le jeu
+                    game_state, game_ui, game_manager, grid, track, enemy_wave = initialize_game(screen)
+                    track_data = track.get_track()
+                    menu_channel.play(menu_music, loops=-1)
 
-                pygame.display.flip()
-
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        pygame.quit()
-                        exit()
-                    elif event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_RETURN:
-                            # Stop all music
-                            game_over_music.stop()
-                            menu_channel.stop()
-                            game_state.set_state("playing")
-                            game_manager.reset_game()
-                            # Reset game components
-                            grid = grid_module.Grid(screen)
-                            grid_data = grid.get_grid()
-                            track = track_module.Track(screen)
-                            track.generate_random_track()
-                            track_data = track.get_track()
-                            enemy_wave = create_enemy_wave(screen, track_data, game_manager)
-
-        # Draw tower preview if a tower is selected
-        if game_ui.get_selected_tower() is not None:
-            game_ui.draw_preview(pygame.mouse.get_pos())
-
-        # Update enemy wave
-        enemy_wave.update()
-
-        # Handle wave completion
-        if enemy_wave.is_wave_complete():
-            game_manager.set_wave_completed(True)
-            # Play wave complete sound
-            wave_complete_sound.play()
-            pygame.time.wait(3000)  # Wait longer for the music to play
-
-            # Reset grid and track for the next wave
-            grid = grid_module.Grid(screen)
-            grid_data = grid.get_grid()
-
-            track = track_module.Track(screen)
-            track.generate_random_track()
-            track_data = track.get_track()
-
-            game_manager.next_wave()  # Progress to the next wave
-            game_manager.add_points(game_manager.get_lives() * 10)  # Add points for completing the wave
-
-            # Create new enemy wave for the next level
-            enemy_wave = create_enemy_wave(screen, track_data, game_manager, is_new_wave=True)
-
-        clock.tick(60)  # Limit the frame rate to 60 FPS
-        pygame.display.flip()  # Update the display
+        clock.tick(60)
+        pygame.display.flip()
 
 
 if __name__ == "__main__":
