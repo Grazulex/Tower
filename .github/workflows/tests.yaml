@@ -36,15 +36,4 @@ jobs:
                 summary: true
                 display-options: fEX
                 fail-on-empty: true
-                title: Test results
-
-            - name: Upload coverage report
-              if: always()
-              uses: codecov/codecov-action@v3
-              with:
-                files: coverage.xml
-                flags: unittests
-                name: codecov-coverage
-                fail_ci_if_error: true
-                verbose: true
-              
+                title: Test results              
