@@ -1,7 +1,7 @@
-from typing import Type, Any, Optional
+from typing import Type, Any
 from tower.config.constants import STARTING_POINTS, STARTING_LIVES
-from .player import Player, PlayerManager
 from .save_manager import save_high_score
+
 
 class GameManager:
     """
@@ -88,7 +88,7 @@ class GameManager:
         # Save the current score if the game is over
         if self.game_over:
             save_high_score(self.points)
-            
+
         self.points = STARTING_POINTS  # Points are reset only for a new game
         self.lives = STARTING_LIVES
         self.current_wave = 1

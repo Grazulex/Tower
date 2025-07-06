@@ -55,7 +55,7 @@ class GameUI:
         points_text = self.font.render(f"Points: {points}", True, WHITE)
         points_rect = points_text.get_rect(topright=(BOARD_WIDTH - 10, 10))
         self.screen.blit(points_text, points_rect)
-        
+
         # Draw player name if logged in
         current_player = PlayerManager.get_current_player()
         if current_player:
