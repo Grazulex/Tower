@@ -32,6 +32,16 @@ jobs:
 
             - name: Run tests
               run: uv run pytest --junit-xml=pytest.xml --cov-report=term-missing:skip-covered  --cov=src | tee pytest-coverage.txt
+
+            - name: Surface failing tests
+              if: always()
+              uses: pmeier/pytest-results-action@main
+              with:
+                path: pytest.xml
+                summary: true
+                display-options: fEX
+                fail-on-empty: true
+                title: Test results    
                 
             - name: Pytest coverage comment
               id: coverageComment
@@ -39,18 +49,3 @@ jobs:
               with:
                 pytest-coverage-path: ./pytest-coverage.txt
                 junitxml-path: ./pytest.xml
-              
-            - name: Check the output coverage
-              run: |
-                echo "Coverage Percentage - ${{ steps.coverageComment.outputs.coverage }}"
-                echo "Coverage Color - ${{ steps.coverageComment.outputs.color }}"
-                echo "Coverage Html - ${{ steps.coverageComment.outputs.coverageHtml }}"
-              
-                echo "Coverage Warnings - ${{ steps.coverageComment.outputs.warnings }}"
-              
-                echo "Coverage Errors - ${{ steps.coverageComment.outputs.errors }}"
-                echo "Coverage Failures - ${{ steps.coverageComment.outputs.failures }}"
-                echo "Coverage Skipped - ${{ steps.coverageComment.outputs.skipped }}"
-                echo "Coverage Tests - ${{ steps.coverageComment.outputs.tests }}"
-                echo "Coverage Time - ${{ steps.coverageComment.outputs.time }}"
-                echo "Not Success Test Info - ${{ steps.coverageComment.outputs.notSuccessTestInfo }}"
