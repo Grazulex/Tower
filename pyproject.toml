@@ -10,3 +10,9 @@ dependencies = [
 [tool.ruff]
 line-length = 120
 target-version = "py312"
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=8.4.1",
+    "ruff>=0.12.2",
+]
