@@ -6,6 +6,7 @@ from tower.config.constants import BOARD_WIDTH, WINDOW_WIDTH, WINDOW_HEIGHT, CEL
 from tower.entities.tours.tower_types import TowerType
 from tower.design.enemy_wave import EnemyWave
 from tower.game.game_manager import GameManager
+from tower.game.player import PlayerManager
 
 
 class GameUI:
@@ -54,6 +55,13 @@ class GameUI:
         points_text = self.font.render(f"Points: {points}", True, WHITE)
         points_rect = points_text.get_rect(topright=(BOARD_WIDTH - 10, 10))
         self.screen.blit(points_text, points_rect)
+        
+        # Draw player name if logged in
+        current_player = PlayerManager.get_current_player()
+        if current_player:
+            player_text = self.info_font.render(f"Player: {current_player.username}", True, GREEN)
+            player_rect = player_text.get_rect(topright=(BOARD_WIDTH - 10, 40))
+            self.screen.blit(player_text, player_rect)
 
     def draw_lives(self, lives: int) -> None:
         """
@@ -78,16 +86,28 @@ class GameUI:
         text_rect = game_over_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 3))
         self.screen.blit(game_over_text, text_rect)
 
-        points_text = self.font.render(f"Score: {game_manager.get_points()}", True, YELLOW)
+        current_score = game_manager.get_points()
+        points_text = self.font.render(f"Score: {current_score}", True, YELLOW)
         points_rect = points_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2))
         self.screen.blit(points_text, points_rect)
 
+        # Show personal best if logged in
+        current_player = PlayerManager.get_current_player()
+        if current_player and current_player.scores:
+            best_score = max(current_player.scores)
+            if current_score > best_score:
+                new_record_text = self.font.render("New Personal Best!", True, GREEN)
+            else:
+                new_record_text = self.font.render(f"Personal Best: {best_score}", True, WHITE)
+            record_rect = new_record_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + 40))
+            self.screen.blit(new_record_text, record_rect)
+
         wave_text = self.font.render(f"Wave reached: {game_manager.get_current_wave()}", True, WHITE)
-        wave_rect = wave_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + 40))
+        wave_rect = wave_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + 80))
         self.screen.blit(wave_text, wave_rect)
 
         kills_text = self.font.render(f"Enemies killed: {game_manager.get_enemies_killed()}", True, WHITE)
-        kills_rect = kills_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + 80))
+        kills_rect = kills_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 + 120))
         self.screen.blit(kills_text, kills_rect)
 
     def draw_enemy_info(self, enemy_wave: EnemyWave, game_manager: GameManager) -> None:

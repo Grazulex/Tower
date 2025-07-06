@@ -1,6 +1,7 @@
-from typing import Type, Any
+from typing import Type, Any, Optional
 from tower.config.constants import STARTING_POINTS, STARTING_LIVES
-
+from .player import Player, PlayerManager
+from .save_manager import save_high_score
 
 class GameManager:
     """
@@ -53,6 +54,9 @@ class GameManager:
         Returns:
             bool: True if the game is over, False otherwise.
         """
+        if self.game_over:
+            # Save the score when game is over
+            save_high_score(self.points)
         return self.game_over
 
     def next_wave(self) -> None:
@@ -81,6 +85,10 @@ class GameManager:
         This function is called only when a new game is started,
         not when transitioning between waves.
         """
+        # Save the current score if the game is over
+        if self.game_over:
+            save_high_score(self.points)
+            
         self.points = STARTING_POINTS  # Points are reset only for a new game
         self.lives = STARTING_LIVES
         self.current_wave = 1

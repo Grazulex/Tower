@@ -39,6 +39,7 @@ from tower.design.enemy_wave import EnemyWave
 from tower.ui.game_ui import GameUI
 from tower.game.game_manager import GameManager
 from tower.game.game_state import GameState
+from tower.ui.menu_manager import MenuManager
 from os.path import join
 from pygame.surface import Surface
 
@@ -86,7 +87,7 @@ def create_enemy_wave(
 
 def initialize_game(
     screen: Surface,
-) -> tuple[GameState, GameUI, GameManager, grid_module.Grid, track_module.Track, EnemyWave]:
+) -> tuple[GameState, MenuManager, GameManager, grid_module.Grid, track_module.Track, EnemyWave]:
     """Initialize game components.
 
     Args:
@@ -102,7 +103,7 @@ def initialize_game(
         - enemy_wave: The initial enemy wave
     """
     game_state = GameState()
-    game_ui = GameUI(screen)
+    menu_manager = MenuManager(screen)
     game_manager = GameManager()
 
     grid = grid_module.Grid(screen)
@@ -112,7 +113,7 @@ def initialize_game(
 
     enemy_wave = create_enemy_wave(screen, track_data, game_manager)
 
-    return game_state, game_ui, game_manager, grid, track, enemy_wave
+    return game_state, menu_manager, game_manager, grid, track, enemy_wave
 
 
 def handle_tower_placement(
@@ -186,23 +187,14 @@ def handle_wave_completion(
     return enemy_wave, new_grid, new_track, new_track_data
 
 
-def render_menu_screen(screen: Surface, game_state: GameState) -> None:
+def render_menu_screen(screen: Surface, menu_manager: MenuManager) -> None:
     """Render the menu screen.
 
     Args:
         screen: The game screen surface
-        game_state: The game state instance
+        menu_manager: The menu manager instance
     """
-    screen.fill(BLACK)
-    font = pygame.font.Font(None, 74)
-    text = font.render("Welcome to the game!", True, WHITE)
-    screen.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, WINDOW_HEIGHT // 3))
-
-    play_text = font.render("Press Enter to start", True, WHITE)
-    screen.blit(
-        play_text,
-        (WINDOW_WIDTH // 2 - play_text.get_width() // 2, WINDOW_HEIGHT // 2),
-    )
+    menu_manager.draw()
     pygame.display.flip()
 
 
@@ -210,7 +202,7 @@ def render_game_screen(
     screen: Surface,
     game_state: GameState,
     game_manager: GameManager,
-    game_ui: GameUI,
+    menu_manager: MenuManager,
     grid: grid_module.Grid,
     track: track_module.Track,
     enemy_wave: EnemyWave,
@@ -230,6 +222,7 @@ def render_game_screen(
     grid.draw(enemy_wave.get_enemies(), game_manager)
     track.draw()
 
+    game_ui = menu_manager.get_game_ui()
     game_ui.draw_points(game_manager.get_points())
     game_ui.draw_lives(game_manager.get_lives())
     game_ui.draw_high_score(game_state.get_high_score())
@@ -261,19 +254,19 @@ def run() -> None:
     clock = pygame.time.Clock()
 
     # Initialize game components
-    game_state, game_ui, game_manager, grid, track, enemy_wave = initialize_game(screen)
+    game_state, menu_manager, game_manager, grid, track, enemy_wave = initialize_game(screen)
     track_data = track.get_track()
 
     # Game loop
     while True:
         if game_state.get_state() == GameState.MENU:
-            render_menu_screen(screen, game_state)
+            render_menu_screen(screen, menu_manager)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     exit()
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                elif menu_manager.handle_event(event):
                     menu_channel.stop()
                     game_state.set_state("playing")
 
@@ -284,10 +277,11 @@ def run() -> None:
                     exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
+                    game_ui = menu_manager.get_game_ui()
                     game_ui.handle_click(pos)
                     handle_tower_placement(pos, game_ui, game_manager, grid, track_data)
 
-            render_game_screen(screen, game_state, game_manager, game_ui, grid, track, enemy_wave)
+            render_game_screen(screen, game_state, game_manager, menu_manager, grid, track, enemy_wave)
             enemy_wave.update()
 
             if game_manager.is_game_over():
@@ -303,7 +297,7 @@ def run() -> None:
 
         elif game_state.get_state() == GameState.GAME_OVER:
             screen.fill(BLACK)
-            game_ui.draw_game_over(game_manager)
+            menu_manager.get_game_ui().draw_game_over(game_manager)
 
             font = pygame.font.Font(None, 36)
             text = font.render("Press Enter to return to the menu", True, WHITE)
@@ -319,7 +313,7 @@ def run() -> None:
                     game_over_music.stop()
                     menu_channel.stop()
                     # Réinitialiser complètement le jeu
-                    game_state, game_ui, game_manager, grid, track, enemy_wave = initialize_game(screen)
+                    game_state, menu_manager, game_manager, grid, track, enemy_wave = initialize_game(screen)
                     track_data = track.get_track()
                     menu_channel.play(menu_music, loops=-1)
 

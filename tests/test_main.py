@@ -5,6 +5,7 @@ import pygame
 from tower.main import create_enemy_wave
 from tower.config.color import BLACK
 from tower.ui.game_ui import GameUI
+from tower.ui.menu_manager import MenuManager
 import tower.design.grid as grid_module
 import tower.design.track as track_module
 from pygame.surface import Surface
@@ -177,10 +178,10 @@ def test_initialize_game(screen):
     """Test game initialization."""
     from tower.main import initialize_game
 
-    game_state, game_ui, game_manager, grid, track, enemy_wave = initialize_game(screen)
+    game_state, menu_manager, game_manager, grid, track, enemy_wave = initialize_game(screen)
 
     assert isinstance(game_state, GameState)
-    assert isinstance(game_ui, GameUI)
+    assert isinstance(menu_manager, MenuManager)
     assert isinstance(game_manager, GameManager)
     assert isinstance(grid, grid_module.Grid)
     assert isinstance(track, track_module.Track)
@@ -264,7 +265,7 @@ def test_render_game_screen(screen):
     # Initialize components
     game_state = GameState()
     game_manager = GameManager()
-    game_ui = GameUI(screen)
+    menu_manager = MenuManager(screen)
     grid = grid_module.Grid(screen)
     track = track_module.Track(screen)
     track.generate_random_track()
@@ -272,7 +273,7 @@ def test_render_game_screen(screen):
     enemy_wave = create_enemy_wave(screen, track_data, game_manager)
 
     # Render game screen
-    render_game_screen(screen, game_state, game_manager, game_ui, grid, track, enemy_wave)
+    render_game_screen(screen, game_state, game_manager, menu_manager, grid, track, enemy_wave)
 
     # We can't verify the exact rendering, but we can check that it doesn't raise errors
     assert True
